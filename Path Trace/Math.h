@@ -1,6 +1,8 @@
 #pragma once
 #include <random>
 
+#include "Vec2.h"
+
 namespace RayTrace {
 	constexpr double TWO_PI = 6.283185307179586476925286766559;
 	constexpr double PI = 3.1415926535897932384626433832795;
@@ -23,6 +25,12 @@ namespace RayTrace {
 		return x;
 	}
 
+	inline Vec2 randomDiskUnit()
+	{
+		double theta = TWO_PI * randomDouble();
+		return Vec2{cos(theta), sin(theta)};
+	}
+	
 	inline Vec3 randomSphereUnit()
 	{
 		double theta = TWO_PI * randomDouble();

@@ -18,7 +18,7 @@
 #define SAVE_IMAGE
 
 // 每像素点采样数
-constexpr int SPP = 24;
+constexpr int SPP = 1024;
 // 最大递归深度
 constexpr int MAX_DEPTH = 128;
 
@@ -59,7 +59,7 @@ namespace RayTrace
 
 	}
 
-	Color sample(Object& objects, Camera camera, double x, double y)
+	Color sample(Object& objects, Camera& camera, double x, double y)
 	{
 		return trace(camera.genRay(x, 1. - y), 0, objects);
 	}
@@ -84,7 +84,7 @@ public:
 		delete[] canvas;
 		delete[] canvasColor;
 	}
-	Light(const int canvasW, const int canvasH) : canvasWidth(canvasW), canvasHeight(canvasH)
+	Light(const int canvasW, const int canvasH, RayTrace::Camera& camera, RayTrace::Object& scene) : canvasWidth(canvasW), canvasHeight(canvasH), camera(camera), scene(scene)
 	{
 		canvas = new graph::ColorBGRA8bit[canvasW * canvasH];
 		canvasColor = new RayTrace::Color[canvasW * canvasH];
@@ -97,7 +97,6 @@ public:
 
 	void init(graph::D2DGraphics*) override
 	{
-		RayTrace::Camera camera{ cameraEye,cameraFront,cameraUp,cameraFov };
 		auto samplePart = [=](const int mod) {
 			for (int sppi = 1; process[mod] < SPP; sppi++) {
 				for (int posy = mod; !this->stopFlag && posy < canvasHeight; posy += concur)
@@ -264,11 +263,8 @@ private:
 	clock_t startTime;
 	bool timePrint = false;
 public:
-	RayTrace::Point cameraEye;
-	RayTrace::Vec3 cameraFront;
-	RayTrace::Vec3 cameraUp;
-	double cameraFov;
-	RayTrace::Union scene;
+	RayTrace::Camera& camera;
+	RayTrace::Object& scene;
 	const int concur = std::thread::hardware_concurrency();
 };
 
@@ -291,13 +287,12 @@ int main()
 	using namespace std;
 	using namespace RayTrace;
 	srand(time(nullptr));
-	Light light(SCREEN_W, SCREEN_H);
-	std::cout << "Hardware Concurrency :" << light.concur << std::endl;
 
-	light.cameraEye = Point{ 0.,-50.,20. };
-	light.cameraFront = norm(Vec3{ 0.,1.,0. });
-	light.cameraUp = norm(Vec3{ 0.,0.,1. });
-	light.cameraFov = 60.;
+	DOFCamera camera = DOFCamera();
+	camera
+		.dof(8., 100.)
+		.lookTo(Point{ 0.,-100.,20. }, Point{ 0.,1.,0. }, Vec3{ 0.,0.,1. })
+		.fov(28.);
 
 	SolidColor white{ WHITE * .75 };
 	SolidColor blueViolet{ BLUE_VIOLET * .75 };
@@ -442,13 +437,20 @@ int main()
 
 	RotateZ rotateBox2{ &box,-HALF_PI / 9. };
 	Translate moveBox2{ &rotateBox2,{8., -8.,0.1} };
+
+	Union scene;
+
 	for (auto& triangle : triangles)
 	{
-		light.scene.add(triangle);
+		scene.add(triangle);
 	}
 
-	light.scene.add(moveBox1);
-	light.scene.add(moveBox2);
+	scene.add(moveBox1);
+	scene.add(moveBox2);
+
+	Light light(SCREEN_W, SCREEN_H, camera, scene);
+
+	std::cout << "Hardware Concurrency :" << light.concur << std::endl;
 
 	graph::GraphSetting setting;
 	setting.width = SCREEN_W;
