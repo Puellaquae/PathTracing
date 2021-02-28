@@ -5,7 +5,8 @@
 
 #pragma comment(lib, "D2DKit/x64/Graphics.lib")
 #include "D2DKit/graph.h"
-
+#undef min
+#undef max
 #include "Camera.h"
 #include "Colors.h"
 #include "Object.h"
@@ -19,6 +20,10 @@
 
 // 每像素点采样数
 constexpr int SPP = 1024;
+
+// 俄罗斯轮盘概率
+constexpr double RUSSIAN_ROULETTE = 0.75;
+constexpr double RUSSIAN_ROULETTE_P = 1. / RUSSIAN_ROULETTE;
 // 最大递归深度
 constexpr int MAX_DEPTH = 128;
 
@@ -40,23 +45,34 @@ namespace RayTrace
 		{
 			return BLACK;
 		}
+
+		auto p = 1.;
+
+		if (depth > 15)
+		{
+			if (randomDouble() > RUSSIAN_ROULETTE)
+			{
+				return BLACK;
+			}
+			p = RUSSIAN_ROULETTE_P;
+		}
+
 		HitResult hitResult;
+
 		if (!object.hit(r, DISTANCE_MIN, DBL_MAX, hitResult))
 		{
 			return BLACK;
-			/*auto unitDirection = norm(r.direction);
-			auto t = 0.5 * (unitDirection.y + 1.0);
-			return (1.0 - t) * WHITE + t * Color{ 0.5, 0.7, 1.0 };*/
 		}
-		auto material = hitResult.object->material;
+
+		auto* material = hitResult.object->material;
 		Ray rayOut{};
 		Color albedo;
+
 		if (material->scatter(r, hitResult, rayOut, albedo))
 		{
-			return albedo * trace(rayOut, depth + 1, object);
+			return p * albedo * trace(rayOut, depth + 1, object);
 		}
-		return material->emit();
-
+		return p * material->emit();
 	}
 
 	Color sample(Object& objects, Camera& camera, double x, double y)
@@ -288,11 +304,10 @@ int main()
 	using namespace RayTrace;
 	srand(time(nullptr));
 
-	DOFCamera camera = DOFCamera();
+	Camera camera = Camera();
 	camera
-		.dof(8., 100.)
-		.lookTo(Point{ 0.,-100.,20. }, Point{ 0.,1.,0. }, Vec3{ 0.,0.,1. })
-		.fov(28.);
+		.lookTo(Point{ 0.,-50.,20. }, Point{ 0.,1.,0. }, Vec3{ 0.,0.,1. })
+		.fov(60.);
 
 	SolidColor white{ WHITE * .75 };
 	SolidColor blueViolet{ BLUE_VIOLET * .75 };
@@ -426,11 +441,14 @@ int main()
 		Triangle(pbs[4],pbs[6],pbs[5],&whiteSolid),
 	};
 
-	Union box;
+	std::vector<Object*> boxTriVec;
+
 	for (auto& t : boxTri)
 	{
-		box.add(t);
+		boxTriVec.emplace_back(&t);
 	}
+
+	BVH box(boxTriVec, 0, 12);
 
 	RotateZ rotateBox1{ &box,HALF_PI / 10. };
 	Translate moveBox1{ &rotateBox1,{-10., 0.,0.1} };
@@ -438,15 +456,17 @@ int main()
 	RotateZ rotateBox2{ &box,-HALF_PI / 9. };
 	Translate moveBox2{ &rotateBox2,{8., -8.,0.1} };
 
-	Union scene;
+	Union room;
 
 	for (auto& triangle : triangles)
 	{
-		scene.add(triangle);
+		room.add(triangle);
 	}
 
-	scene.add(moveBox1);
-	scene.add(moveBox2);
+	room.add(moveBox1);
+	room.add(moveBox2);
+
+	BVH scene(room.objects, 0, room.objects.size());
 
 	Light light(SCREEN_W, SCREEN_H, camera, scene);
 

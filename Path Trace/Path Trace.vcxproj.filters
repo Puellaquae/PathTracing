@@ -56,10 +56,13 @@
     <ClInclude Include="Texture.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="..\D2DKit\graph.h">
+    <ClInclude Include="AABB.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="D2DKit\Keyboard.h">
       <Filter>头文件\D2DKit</Filter>
     </ClInclude>
-    <ClInclude Include="..\D2DKit\Keyboard.h">
+    <ClInclude Include="D2DKit\graph.h">
       <Filter>头文件\D2DKit</Filter>
     </ClInclude>
   </ItemGroup>

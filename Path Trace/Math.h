@@ -19,6 +19,11 @@ namespace RayTrace {
 		return rand() * 1. / (RAND_MAX);
 	}
 
+	inline int randomInt(int lower, int upper)
+	{
+		return rand() % (upper - lower + 1) + lower;
+	}
+
 	inline double clamp(double x, double min, double max) {
 		if (x < min) return min;
 		if (x > max) return max;
@@ -28,9 +33,9 @@ namespace RayTrace {
 	inline Vec2 randomDiskUnit()
 	{
 		double theta = TWO_PI * randomDouble();
-		return Vec2{cos(theta), sin(theta)};
+		return Vec2{ cos(theta), sin(theta) };
 	}
-	
+
 	inline Vec3 randomSphereUnit()
 	{
 		double theta = TWO_PI * randomDouble();

@@ -71,5 +71,15 @@ namespace RayTrace
 		return v / v.length();
 	}
 
+	inline Vec2 min(Vec2 a, Vec2 b)
+	{
+		return Vec2{ fmin(a.u,b.u),fmin(a.v,b.v) };
+	}
+
+	inline Vec2 max(Vec2 a, Vec2 b)
+	{
+		return Vec2{ fmax(a.u,b.u),fmax(a.v,b.v) };
+	}
+
 	using Coord = Vec2;
 }

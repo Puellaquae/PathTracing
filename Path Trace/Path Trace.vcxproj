@@ -156,10 +156,11 @@
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\D2DKit\graph.h" />
-    <ClInclude Include="..\D2DKit\Keyboard.h" />
+    <ClInclude Include="AABB.h" />
     <ClInclude Include="Camera.h" />
     <ClInclude Include="Colors.h" />
+    <ClInclude Include="D2DKit\graph.h" />
+    <ClInclude Include="D2DKit\Keyboard.h" />
     <ClInclude Include="HitResult.h" />
     <ClInclude Include="Material.h" />
     <ClInclude Include="Math.h" />

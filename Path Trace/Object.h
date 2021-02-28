@@ -1,7 +1,7 @@
 #pragma once
 #include <utility>
 
-
+#include "AABB.h"
 #include "Ray.h"
 #include "HitResult.h"
 #include "Material.h"
@@ -12,6 +12,7 @@ namespace RayTrace
 	{
 		Material* material;
 		virtual bool hit(Ray ray, double disMin, double disMax, HitResult& hitResult) = 0;
+		virtual bool boundingBox(AABB& out) = 0;
 		Object(Material* material) :material(material) {}
 	};
 
@@ -52,6 +53,13 @@ namespace RayTrace
 				}
 			}
 			return false;
+		}
+
+		bool boundingBox(AABB& out) override
+		{
+			out = AABB{ center - Vec3{radius,radius,radius},
+				center + Vec3{radius,radius,radius} };
+			return true;
 		}
 		double radius;
 		Point center;
@@ -112,6 +120,29 @@ namespace RayTrace
 			Coord tc = Coord{ 0.,1. }) :
 			Object(material), v0(a), v1(b), v2(c), t0(ta), t1(tb), t2(tc) {}
 
+		bool boundingBox(AABB& out) override
+		{
+			auto l = min(min(v0, v1), v2);
+			auto r = max(max(v0, v1), v2);
+			if (l.x > r.x - 0.0001)
+			{
+				l.x -= 0.0001;
+				r.x += 0.0001;
+			}
+			if (l.y > r.y - 0.0001)
+			{
+				l.y -= 0.0001;
+				r.y += 0.0001;
+			}
+			if (l.z > r.z - 0.0001)
+			{
+				l.z -= 0.0001;
+				r.z += 0.0001;
+			}
+			out = AABB{ l,r };
+			return true;
+		}
+
 		Point v0, v1, v2;
 		Coord t0, t1, t2;
 	};
@@ -147,6 +178,27 @@ namespace RayTrace
 				}
 			}
 			return hit;
+		}
+
+		bool boundingBox(AABB& out) override
+		{
+			if (objects.empty())
+			{
+				return false;
+			}
+			AABB temp;
+			bool first = true;
+			for (const auto& obj : objects)
+			{
+				if (!obj->boundingBox(temp))
+				{
+					return false;
+				}
+				out = first ? temp : surrounding(out, temp);
+				first = false;
+			}
+
+			return true;
 		}
 	};
 
@@ -193,6 +245,12 @@ namespace RayTrace
 
 			return true;
 		}
+
+		bool boundingBox(AABB& out) override
+		{
+			return obj->boundingBox(out);
+		}
+
 		Object* obj;
 		double negInvDensity;
 	};
@@ -200,7 +258,36 @@ namespace RayTrace
 	struct RotateZ :Object
 	{
 		RotateZ(Object* o, double theta) :
-			Object(nullptr), obj(o), theta(theta) {}
+			Object(nullptr), obj(o), theta(theta)
+		{
+			if (!obj->boundingBox(box))
+			{
+				fprintf_s(stderr, "No bounding box, check %p\n", o);
+			}
+
+			Point mini{ DBL_MAX,DBL_MAX,DBL_MAX };
+			Point maxi = -mini;
+
+			for (int i = 0; i < 2; i++)
+			{
+				for (int j = 0; j < 2; j++)
+				{
+					for (int k = 0; k < 2; k++)
+					{
+						auto x = i * box.maximum.x + (1 - i) * box.minimum.x;
+						auto y = j * box.maximum.y + (1 - j) * box.minimum.y;
+						auto z = k * box.maximum.z + (1 - k) * box.minimum.z;
+
+						auto n = rotateZ(Vec3{ x,y,z }, theta);
+
+						mini = min(mini, n);
+						maxi = max(maxi, n);
+					}
+				}
+			}
+
+			box = AABB{ mini,maxi };
+		}
 
 		bool hit(Ray ray, double disMin, double disMax, HitResult& hitResult) override
 		{
@@ -217,6 +304,14 @@ namespace RayTrace
 
 			return true;
 		}
+
+		bool boundingBox(AABB& out) override
+		{
+			out = box;
+			return true;
+		}
+
+		AABB box;
 		Object* obj;
 		double theta;
 	};
@@ -236,7 +331,119 @@ namespace RayTrace
 			hitResult.setFaceNormal(nRay, hitResult.normal);
 			return true;
 		}
+
+		bool boundingBox(AABB& out) override
+		{
+			if (!obj->boundingBox(out))
+			{
+				return false;
+			}
+			out.minimum = out.minimum + offset;
+			out.maximum = out.maximum + offset;
+			return true;
+		}
+
 		Object* obj;
 		Vec3 offset;
+	};
+
+	inline bool boxCmpX(Object* a, Object* b)
+	{
+		AABB ba, bb;
+		if (!a->boundingBox(ba) || !b->boundingBox(bb))
+		{
+			fprintf_s(stderr, "No bounding box, check %p or %p\n", a, b);
+		}
+
+		return ba.minimum.x < bb.minimum.x;
+	}
+
+	inline bool boxCmpY(Object* a, Object* b)
+	{
+		AABB ba, bb;
+		if (!a->boundingBox(ba) || !b->boundingBox(bb))
+		{
+			fprintf_s(stderr, "No bounding box, check %p or %p\n", a, b);
+		}
+
+		return ba.minimum.y < bb.minimum.y;
+	}
+
+	inline bool boxCmpZ(Object* a, Object* b)
+	{
+		AABB ba, bb;
+		if (!a->boundingBox(ba) || !b->boundingBox(bb))
+		{
+			fprintf_s(stderr, "No bounding box, check %p or %p\n", a, b);
+		}
+
+		return ba.minimum.z < bb.minimum.z;
+	}
+
+	struct BVH : Object
+	{
+		BVH(std::vector<Object*>& objects, size_t begin, size_t end) :Object(nullptr)
+		{
+			std::vector<Object*> objs = objects;
+			auto axis = randomInt(0, 2);
+			auto cmp = (axis == 0) ? boxCmpX : (axis == 1) ? boxCmpY : boxCmpZ;
+
+			auto len = end - begin;
+
+			if (len == 1)
+			{
+				left = right = objs[begin];
+			}
+			else if (len == 2)
+			{
+				if (cmp(objs[begin], objs[begin + 1]))
+				{
+					left = objs[begin];
+					right = objs[begin + 1];
+				}
+				else
+				{
+					left = objs[begin + 1];
+					right = objs[begin];
+				}
+			}
+			else
+			{
+				std::sort(objs.begin() + begin, objs.begin() + end, cmp);
+				auto mid = begin + len / 2;
+				left = new BVH(objects, begin, mid);
+				right = new BVH(objects, mid, end);
+			}
+
+			AABB l, r;
+
+			if (!left->boundingBox(l) || !right->boundingBox(r))
+			{
+				fprintf_s(stderr, "No bounding box\n");
+			}
+
+			box = surrounding(l, r);
+		}
+
+		bool hit(Ray ray, double disMin, double disMax, HitResult& hitResult) override
+		{
+			if (!box.hit(ray, disMin, disMax))
+			{
+				return false;
+			}
+
+			auto hitL = left->hit(ray, disMin, disMax, hitResult);
+			auto hitR = right->hit(ray, disMin, hitL ? hitResult.distance : disMax, hitResult);
+
+			return hitL || hitR;
+		}
+		bool boundingBox(AABB& out) override
+		{
+			out = box;
+			return true;
+		}
+
+		Object* left, * right;
+		AABB box;
 	};
 }

@@ -76,6 +76,16 @@ namespace RayTrace {
 		return v / v.length();
 	}
 
+	inline Vec3 min(Vec3 a, Vec3 b)
+	{
+		return Vec3{ fmin(a.x,b.x),fmin(a.y,b.y),fmin(a.z,b.z) };
+	}
+
+	inline Vec3 max(Vec3 a, Vec3 b)
+	{
+		return Vec3{ fmax(a.x,b.x),fmax(a.y,b.y),fmax(a.z,b.z) };
+	}
+
 	using Point = Vec3;
 	using Color = Vec3;
 }
