@@ -1,85 +1,42 @@
 #pragma once
+#include "Common.h"
+
 namespace RayTrace
 {
 	struct Vec2
 	{
-		double u, v;
+		Real u, v;
 
-		double length() const
-		{
-			return sqrt(sqrLength());
-		}
+		[[nodiscard]] Real length() const;
 
-		double sqrLength() const
-		{
-			return u * u + v * v;
-		}
+		[[nodiscard]] Real sqrLength() const;
 
-		bool nearZero() const
-		{
-			constexpr auto s = 1e-8;
-			return (fabs(u) < s) && (fabs(v) < s);
-		}
+		[[nodiscard]] bool nearZero() const;
 	};
 
-	inline Vec2 operator+(const Vec2 a, const Vec2 b)
-	{
-		return Vec2{ a.u + b.u,a.v + b.v };
-	}
+	Vec2 operator+(Vec2 a, Vec2 b);
 
-	inline Vec2 operator-(const Vec2 v)
-	{
-		return Vec2{ -v.u,-v.v };
-	}
+	Vec2 operator-(Vec2 v);
 
-	inline Vec2 operator-(const Vec2 a, const Vec2 b)
-	{
-		return Vec2{ a.u - b.u,a.v - b.v };
-	}
+	Vec2 operator-(Vec2 a, Vec2 b);
 
-	inline Vec2 operator*(const Vec2 a, const Vec2 b)
-	{
-		return Vec2{ a.u * b.u,a.v * b.v };
-	}
+	Vec2 operator*(Vec2 a, Vec2 b);
 
-	inline Vec2 operator*(const Vec2 v, const double s)
-	{
-		return Vec2{ v.u * s,v.v * s };
-	}
+	Vec2 operator*(Vec2 v, Real s);
 
-	inline Vec2 operator*(const double s, const Vec2 v)
-	{
-		return Vec2{ v.u * s,v.v * s };
-	}
+	Vec2 operator*(Real s, Vec2 v);
 
-	inline Vec2 operator/(const Vec2 v, const double s) {
-		return Vec2{ v.u / s,v.v / s };
-	}
+	Vec2 operator/(Vec2 v, Real s);
 
-	inline double dot(const Vec2 a, const Vec2 b)
-	{
-		return a.u * b.u + a.v * b.v;
-	}
+	Real dot(Vec2 a, Vec2 b);
 
-	inline double cross(const Vec2 a, const Vec2 b)
-	{
-		return a.u * b.v - b.u * a.v;
-	}
+	Real cross(Vec2 a, Vec2 b);
 
-	inline Vec2 norm(const Vec2 v)
-	{
-		return v / v.length();
-	}
+	Vec2 norm(Vec2 v);
 
-	inline Vec2 min(Vec2 a, Vec2 b)
-	{
-		return Vec2{ fmin(a.u,b.u),fmin(a.v,b.v) };
-	}
+	Vec2 min(Vec2 a, Vec2 b);
 
-	inline Vec2 max(Vec2 a, Vec2 b)
-	{
-		return Vec2{ fmax(a.u,b.u),fmax(a.v,b.v) };
-	}
+	Vec2 max(Vec2 a, Vec2 b);
 
 	using Coord = Vec2;
 }

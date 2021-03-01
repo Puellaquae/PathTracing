@@ -7,7 +7,8 @@ namespace RayTrace
 	{
 		Point origin;
 		Vec3 direction;
-		Point at(double distance) const
+
+		[[nodiscard]] Point at(Real distance) const
 		{
 			return origin + (distance * direction);
 		}

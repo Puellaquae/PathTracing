@@ -1,90 +1,43 @@
 #pragma once
+#include "Common.h"
 
 namespace RayTrace {
 
 	struct Vec3
 	{
 
-		double x, y, z;
+		Real x, y, z;
 
-		double length() const
-		{
-			return sqrt(sqrLength());
-		}
+		[[nodiscard]] Real length() const;
 
-		double sqrLength() const
-		{
-			return x * x + y * y + z * z;
-		}
+		[[nodiscard]] Real sqrLength() const;
 
-		bool nearZero() const
-		{
-			constexpr auto s = 1e-8;
-			return (fabs(x) < s) && (fabs(y) < s) && (fabs(z) < s);
-		}
+		[[nodiscard]] bool nearZero() const;
 	};
 
-	inline Vec3 operator+(const Vec3 a, const Vec3 b)
-	{
-		return Vec3{ a.x + b.x,a.y + b.y,a.z + b.z };
-	}
+	Vec3 operator+(Vec3 a, Vec3 b);
 
-	inline Vec3 operator-(const Vec3 v)
-	{
-		return Vec3{ -v.x,-v.y,-v.z };
-	}
+	Vec3 operator-(Vec3 v);
 
-	inline Vec3 operator-(const Vec3 a, const Vec3 b)
-	{
-		return Vec3{ a.x - b.x,a.y - b.y,a.z - b.z };
-	}
+	Vec3 operator-(Vec3 a, Vec3 b);
 
-	inline Vec3 operator*(const Vec3 a, const Vec3 b)
-	{
-		return Vec3{ a.x * b.x,a.y * b.y,a.z * b.z };
-	}
+	Vec3 operator*(Vec3 a, Vec3 b);
 
-	inline Vec3 operator*(const Vec3 v, const double s)
-	{
-		return Vec3{ v.x * s,v.y * s,v.z * s };
-	}
+	Vec3 operator*(Vec3 v, Real s);
 
-	inline Vec3 operator*(const double s, const Vec3 v)
-	{
-		return Vec3{ v.x * s,v.y * s,v.z * s };
-	}
+	Vec3 operator*(Real s, Vec3 v);
 
-	inline Vec3 operator/(const Vec3 v, const double s) {
-		return Vec3{ v.x / s,v.y / s,v.z / s };
-	}
+	Vec3 operator/(Vec3 v, Real s);
 
-	inline double dot(const Vec3 a, const Vec3 b)
-	{
-		return a.x * b.x + a.y * b.y + a.z * b.z;
-	}
+	Real dot(Vec3 a, Vec3 b);
 
-	inline Vec3 cross(const Vec3 a, const Vec3 b)
-	{
-		return Vec3{
-			a.y * b.z - a.z * b.y,
-			a.z * b.x - a.x * b.z,
-			a.x * b.y - a.y * b.x };
-	}
+	Vec3 cross(Vec3 a, Vec3 b);
 
-	inline Vec3 norm(const Vec3 v)
-	{
-		return v / v.length();
-	}
+	Vec3 norm(Vec3 v);
 
-	inline Vec3 min(Vec3 a, Vec3 b)
-	{
-		return Vec3{ fmin(a.x,b.x),fmin(a.y,b.y),fmin(a.z,b.z) };
-	}
+	Vec3 min(Vec3 a, Vec3 b);
 
-	inline Vec3 max(Vec3 a, Vec3 b)
-	{
-		return Vec3{ fmax(a.x,b.x),fmax(a.y,b.y),fmax(a.z,b.z) };
-	}
+	Vec3 max(Vec3 a, Vec3 b);
 
 	using Point = Vec3;
 	using Color = Vec3;

@@ -135,7 +135,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>false</ConformanceMode>
-      <Optimization>Full</Optimization>
+      <Optimization>MaxSpeed</Optimization>
       <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
       <ExceptionHandling />
       <BufferSecurityCheck>
@@ -143,6 +143,7 @@
       <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
       <FloatingPointModel>Fast</FloatingPointModel>
       <OpenMPSupport>true</OpenMPSupport>
+      <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -153,21 +154,56 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="AABB.cpp" />
+    <ClCompile Include="BVH.cpp" />
+    <ClCompile Include="Camera.cpp" />
+    <ClCompile Include="ConstantMedium.cpp" />
+    <ClCompile Include="Dielectric.cpp" />
+    <ClCompile Include="Diffuse.cpp" />
+    <ClCompile Include="DOFCamera.cpp" />
+    <ClCompile Include="Isotropic.cpp" />
+    <ClCompile Include="Lambertian.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="Metal.cpp" />
+    <ClCompile Include="Math.cpp" />
+    <ClCompile Include="RotateZ.cpp" />
+    <ClCompile Include="Sphere.cpp" />
+    <ClCompile Include="Translate.cpp" />
+    <ClCompile Include="Triangle.cpp" />
+    <ClCompile Include="Union.cpp" />
+    <ClCompile Include="Vec2.cpp" />
+    <ClCompile Include="Vec3.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AABB.h" />
+    <ClInclude Include="BVH.h" />
     <ClInclude Include="Camera.h" />
+    <ClInclude Include="Checker.h" />
     <ClInclude Include="Colors.h" />
+    <ClInclude Include="Common.h" />
+    <ClInclude Include="ConstantMedium.h" />
     <ClInclude Include="D2DKit\graph.h" />
     <ClInclude Include="D2DKit\Keyboard.h" />
+    <ClInclude Include="Dielectric.h" />
+    <ClInclude Include="Diffuse.h" />
+    <ClInclude Include="DiffuseLight.h" />
+    <ClInclude Include="DOFCamera.h" />
     <ClInclude Include="HitResult.h" />
+    <ClInclude Include="Isotropic.h" />
+    <ClInclude Include="Lambertian.h" />
+    <ClInclude Include="Metal.h" />
     <ClInclude Include="Material.h" />
     <ClInclude Include="Math.h" />
     <ClInclude Include="Object.h" />
     <ClInclude Include="Ray.h" />
+    <ClInclude Include="RotateZ.h" />
+    <ClInclude Include="SolidColor.h" />
+    <ClInclude Include="Sphere.h" />
     <ClInclude Include="svpng.h" />
     <ClInclude Include="Texture.h" />
+    <ClInclude Include="Translate.h" />
+    <ClInclude Include="Triangle.h" />
+    <ClInclude Include="Union.h" />
     <ClInclude Include="Vec2.h" />
     <ClInclude Include="Vec3.h" />
   </ItemGroup>

@@ -1,22 +1,39 @@
 #include <cmath>
 #include <ctime>
-#include <iostream>
 #include <thread>
 
 #pragma comment(lib, "D2DKit/x64/Graphics.lib")
 #include "D2DKit/graph.h"
 #undef min
 #undef max
-#include "Camera.h"
-#include "Colors.h"
+
+#include "Common.h"
+#include "BVH.h"
+#include "Material.h"
 #include "Object.h"
-#include "Ray.h"
+#include "Texture.h"
+#include "Camera.h"
+#include "Checker.h"
+#include "Vec2.h"
 #include "Vec3.h"
+#include "HitResult.h"
+#include "Colors.h"
+#include "Dielectric.h"
+#include "DiffuseLight.h"
+#include "Lambertian.h"
+#include "Metal.h"
+#include "RotateZ.h"
+#include "SolidColor.h"
 #include "svpng.h"
+#include "Translate.h"
+#include "Triangle.h"
+#include "Union.h"
 
 //#define CAMERA_CAN_MOVE
 
 #define SAVE_IMAGE
+
+#define ENABLE_RR
 
 // 每像素点采样数
 constexpr int SPP = 1024;
@@ -45,21 +62,21 @@ namespace RayTrace
 		{
 			return BLACK;
 		}
-
+#ifdef ENABLE_RR
 		auto p = 1.;
 
 		if (depth > 15)
 		{
-			if (randomDouble() > RUSSIAN_ROULETTE)
+			if (randomFloat() > RUSSIAN_ROULETTE)
 			{
 				return BLACK;
 			}
 			p = RUSSIAN_ROULETTE_P;
 		}
-
+#endif
 		HitResult hitResult;
 
-		if (!object.hit(r, DISTANCE_MIN, DBL_MAX, hitResult))
+		if (!object.hit(r, DISTANCE_MIN, REAL_INF, hitResult))
 		{
 			return BLACK;
 		}
@@ -70,9 +87,15 @@ namespace RayTrace
 
 		if (material->scatter(r, hitResult, rayOut, albedo))
 		{
+#ifdef ENABLE_RR
 			return p * albedo * trace(rayOut, depth + 1, object);
 		}
 		return p * material->emit();
+#else
+			return albedo * trace(rayOut, depth + 1, object);
+	}
+		return material->emit();
+#endif
 	}
 
 	Color sample(Object& objects, Camera& camera, double x, double y)
@@ -89,27 +112,26 @@ graph::ColorBGRA8bit displayColor(const RayTrace::Color color)
 	return graph::ColorBGRA8bit{ b,g,r,255 };
 }
 
-
-class Light final :public graph::Scene
+class RenderScene final :public graph::Scene
 {
 public:
-	~Light() override
+	~RenderScene() override
 	{
 		stopFlag = true;
 		while (runThread) {}
 		delete[] canvas;
 		delete[] canvasColor;
 	}
-	Light(const int canvasW, const int canvasH, RayTrace::Camera& camera, RayTrace::Object& scene) : canvasWidth(canvasW), canvasHeight(canvasH), camera(camera), scene(scene)
+	RenderScene(const int canvasW, const int canvasH, RayTrace::Camera& camera, RayTrace::Object& scene) : canvasWidth(canvasW), canvasHeight(canvasH), camera(camera), scene(scene)
 	{
 		canvas = new graph::ColorBGRA8bit[canvasW * canvasH];
 		canvasColor = new RayTrace::Color[canvasW * canvasH];
 	}
 
-	Light(const Light&) = delete;
-	Light& operator=(const Light&) = delete;
-	Light(Light&&) = default;
-	Light& operator=(Light&&) = default;
+	RenderScene(const RenderScene&) = delete;
+	RenderScene& operator=(const RenderScene&) = delete;
+	RenderScene(RenderScene&&) = default;
+	RenderScene& operator=(RenderScene&&) = default;
 
 	void init(graph::D2DGraphics*) override
 	{
@@ -120,8 +142,8 @@ public:
 					for (int posx = 0; !this->stopFlag && posx < canvasWidth; posx++)
 					{
 						const int pos = posy * canvasWidth + posx;
-						double ux = static_cast<double>(posx + RayTrace::randomDouble()) / static_cast<double>(canvasWidth);
-						double uy = static_cast<double>(posy + RayTrace::randomDouble()) / static_cast<double>(canvasHeight);
+						double ux = static_cast<double>(posx + RayTrace::randomFloat()) / static_cast<double>(canvasWidth);
+						double uy = static_cast<double>(posy + RayTrace::randomFloat()) / static_cast<double>(canvasHeight);
 						RayTrace::Color rc = canvasColor[pos] + sample(scene, camera, ux, uy);
 						canvasColor[pos] = rc;
 						canvas[pos] = displayColor(rc / sppi);
@@ -263,9 +285,9 @@ private:
 		auto t = clock() - startTime;
 		for (auto i = 0; i < process.size(); i++)
 		{
-			double spf = 0.001 * t / process[i];
+			auto spf = 0.001 * t / process[i];
 			int remain = (SPP - process[i]) * spf;
-			printf_s("#%d[%d/%d=%.2f][%.2f spf][%dm%ds]        \n", i, process[i], SPP, 1. * process[i] / SPP, spf, remain / 60, remain % 60);
+			printf_s("#%d[%d/%d][%.2f spf][%dm%ds]        \n", i, process[i], SPP, spf, remain / 60, remain % 60);
 		}
 	}
 	bool bar_start = false;
@@ -310,6 +332,7 @@ int main()
 		.fov(60.);
 
 	SolidColor white{ WHITE * .75 };
+	SolidColor whiteAll{ WHITE };
 	SolidColor blueViolet{ BLUE_VIOLET * .75 };
 	SolidColor orange{ ORANGE * .75 };
 	SolidColor aquamarine{ AQUAMARINE * .75 };
@@ -322,9 +345,9 @@ int main()
 	Lambertian orangeSolid{ &orange };
 	Lambertian blueSolid{ &aquamarine };
 	Lambertian checkerSolid{ &checker };
-	Matel box1{ &white,0.3 };
-	DielectricFresnel glass{ 1.5 };
-	Matel mirror{ &white };
+	Metal box1{ &white,0.3f };
+	DielectricFresnel glass{ 1.5f, &whiteAll };
+	Metal mirror{ &white };
 
 	Point points[]
 	{
@@ -450,27 +473,27 @@ int main()
 
 	BVH box(boxTriVec, 0, 12);
 
-	RotateZ rotateBox1{ &box,HALF_PI / 10. };
+	RotateZ rotateBox1{ &box,HALF_PI / 10 };
 	Translate moveBox1{ &rotateBox1,{-10., 0.,0.1} };
 
-	RotateZ rotateBox2{ &box,-HALF_PI / 9. };
+	RotateZ rotateBox2{ &box,-HALF_PI / 9 };
 	Translate moveBox2{ &rotateBox2,{8., -8.,0.1} };
 
 	Union room;
 
 	for (auto& triangle : triangles)
 	{
-		room.add(triangle);
+		room.objects.emplace_back(&triangle);
 	}
 
-	room.add(moveBox1);
-	room.add(moveBox2);
+	room.objects.emplace_back(&moveBox1);
+	room.objects.emplace_back(&moveBox2);
 
 	BVH scene(room.objects, 0, room.objects.size());
 
-	Light light(SCREEN_W, SCREEN_H, camera, scene);
+	RenderScene light(SCREEN_W, SCREEN_H, camera, scene);
 
-	std::cout << "Hardware Concurrency :" << light.concur << std::endl;
+	printf_s("Hardware Concurrency : %d\n", light.concur);
 
 	graph::GraphSetting setting;
 	setting.width = SCREEN_W;
