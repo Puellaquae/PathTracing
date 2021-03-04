@@ -14,7 +14,7 @@ namespace RayTrace {
 
 	constexpr Real REAL_INF = 3.402823466e+38F;
 	
-	Real randomFloat();
+	Real randomReal();
 
 	int randomInt(int lower, int upper);
 

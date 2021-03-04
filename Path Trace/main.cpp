@@ -38,9 +38,6 @@
 // 每像素点采样数
 constexpr int SPP = 1024;
 
-// 俄罗斯轮盘概率
-constexpr double RUSSIAN_ROULETTE = 0.75;
-constexpr double RUSSIAN_ROULETTE_P = 1. / RUSSIAN_ROULETTE;
 // 最大递归深度
 constexpr int MAX_DEPTH = 128;
 
@@ -62,18 +59,7 @@ namespace RayTrace
 		{
 			return BLACK;
 		}
-#ifdef ENABLE_RR
-		auto p = 1.;
 
-		if (depth > 15)
-		{
-			if (randomFloat() > RUSSIAN_ROULETTE)
-			{
-				return BLACK;
-			}
-			p = RUSSIAN_ROULETTE_P;
-		}
-#endif
 		HitResult hitResult;
 
 		if (!object.hit(r, DISTANCE_MIN, REAL_INF, hitResult))
@@ -87,15 +73,19 @@ namespace RayTrace
 
 		if (material->scatter(r, hitResult, rayOut, albedo))
 		{
-#ifdef ENABLE_RR
-			return p * albedo * trace(rayOut, depth + 1, object);
+			auto p = 1.f;
+			if (depth > 5)
+			{
+				p = max(albedo);
+				if (randomReal() > p)
+				{
+					return BLACK;
+				}
+				p = 1.f / p;
+			}
+			return p * material->emit() + p * albedo * trace(rayOut, depth + 1, object);
 		}
-		return p * material->emit();
-#else
-			return albedo * trace(rayOut, depth + 1, object);
-	}
 		return material->emit();
-#endif
 	}
 
 	Color sample(Object& objects, Camera& camera, double x, double y)
@@ -142,8 +132,8 @@ public:
 					for (int posx = 0; !this->stopFlag && posx < canvasWidth; posx++)
 					{
 						const int pos = posy * canvasWidth + posx;
-						double ux = static_cast<double>(posx + RayTrace::randomFloat()) / static_cast<double>(canvasWidth);
-						double uy = static_cast<double>(posy + RayTrace::randomFloat()) / static_cast<double>(canvasHeight);
+						double ux = static_cast<double>(posx + RayTrace::randomReal()) / static_cast<double>(canvasWidth);
+						double uy = static_cast<double>(posy + RayTrace::randomReal()) / static_cast<double>(canvasHeight);
 						RayTrace::Color rc = canvasColor[pos] + sample(scene, camera, ux, uy);
 						canvasColor[pos] = rc;
 						canvas[pos] = displayColor(rc / sppi);

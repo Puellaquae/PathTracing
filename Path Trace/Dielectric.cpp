@@ -27,7 +27,7 @@ namespace RayTrace
 			auto reflectanceProb = hitResult.outside
 				? reflectanceFresnel(cosTheta, costTheta, 1.f, refraction)
 				: reflectanceFresnel(cosTheta, costTheta, refraction, 1.f);
-			if (reflectanceProb > randomFloat())
+			if (reflectanceProb > randomReal())
 			{
 				dir = reflect(dir, hitResult.normal);
 			}
@@ -63,7 +63,7 @@ namespace RayTrace
 			auto reflectanceProb = hitResult.outside
 				? reflectanceSchlick(cosTheta, costTheta, 1.f, refraction)
 				: reflectanceSchlick(cosTheta, costTheta, refraction, 1.f);
-			if (reflectanceProb > randomFloat())
+			if (reflectanceProb > randomReal())
 			{
 				dir = reflect(dir, hitResult.normal);
 			}

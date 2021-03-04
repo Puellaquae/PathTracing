@@ -84,4 +84,14 @@ namespace RayTrace
 	{
 		return Vec3{std::max(a.x, b.x), std::max(a.y, b.y), std::max(a.z, b.z)};
 	}
+
+	Real max(const Vec3 v)
+	{
+		return std::max(std::max(v.x,v.y),v.z);
+	}
+
+	Real min(const Vec3 v)
+	{
+		return std::min(std::min(v.x,v.y),v.z);
+	}
 }

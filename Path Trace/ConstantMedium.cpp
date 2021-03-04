@@ -27,7 +27,7 @@ namespace RayTrace
 		}
 
 		auto distanceInsideObject = r2.distance - r1.distance;
-		auto hitDistance = negInvDensity * std::log(randomFloat());
+		auto hitDistance = negInvDensity * std::log(randomReal());
 
 		if (hitDistance > distanceInsideObject)
 		{

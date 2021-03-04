@@ -3,7 +3,7 @@
 
 namespace RayTrace
 {
-	Real randomFloat()
+	Real randomReal()
 	{
 		return std::rand() * 1.f / (RAND_MAX);
 	}
@@ -22,14 +22,14 @@ namespace RayTrace
 
 	Vec2 randomDiskUnit()
 	{
-		auto theta = TWO_PI * randomFloat();
+		auto theta = TWO_PI * randomReal();
 		return Vec2{std::cos(theta), std::sin(theta)};
 	}
 
 	Vec3 randomSphereUnit()
 	{
-		auto theta = TWO_PI * randomFloat();
-		auto r2 = randomFloat();
+		auto theta = TWO_PI * randomReal();
+		auto r2 = randomReal();
 		auto r = std::sqrt(r2);
 
 		return Vec3{std::cos(theta) * r, std::sin(theta) * r, std::sqrt(1.f - r2)};

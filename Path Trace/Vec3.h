@@ -39,6 +39,10 @@ namespace RayTrace {
 
 	Vec3 max(Vec3 a, Vec3 b);
 
+	Real max(Vec3 v);
+
+	Real min(Vec3 v);
+	
 	using Point = Vec3;
 	using Color = Vec3;
 }
