@@ -1,13 +1,16 @@
+#include <atomic>
 #include <cmath>
 #include <ctime>
 #include <thread>
+#include <Windows.h>
 
 #pragma comment(lib, "D2DKit/x64/Graphics.lib")
 #include "D2DKit/graph.h"
+#include "ImgShow.h"
+
 #undef min
 #undef max
 
-#include "Common.h"
 #include "BVH.h"
 #include "Material.h"
 #include "Object.h"
@@ -22,6 +25,7 @@
 #include "DiffuseLight.h"
 #include "Lambertian.h"
 #include "Metal.h"
+#include "Render.h"
 #include "RotateZ.h"
 #include "SolidColor.h"
 #include "svpng.h"
@@ -42,7 +46,7 @@ constexpr int SPP = 1024;
 constexpr int MAX_DEPTH = 128;
 
 // Hit时最小保留距离
-constexpr double DISTANCE_MIN = 0.0001;
+constexpr double MIN_DISTANCE = 0.0001;
 
 constexpr double GAMMA = 2.2;
 
@@ -51,49 +55,6 @@ constexpr int SCREEN_H = 512;
 constexpr int VIEWPORT_W = 2;
 constexpr int VIEWPORT_H = 2;
 
-namespace RayTrace
-{
-	Color trace(const Ray r, int depth, Object& object)
-	{
-		if (depth > MAX_DEPTH)
-		{
-			return BLACK;
-		}
-
-		HitResult hitResult;
-
-		if (!object.hit(r, DISTANCE_MIN, REAL_INF, hitResult))
-		{
-			return BLACK;
-		}
-
-		auto* material = hitResult.object->material;
-		Ray rayOut{};
-		Color albedo;
-
-		if (material->scatter(r, hitResult, rayOut, albedo))
-		{
-			auto p = 1.f;
-			if (depth > 5)
-			{
-				p = max(albedo);
-				if (randomReal() > p)
-				{
-					return BLACK;
-				}
-				p = 1.f / p;
-			}
-			return p * material->emit() + p * albedo * trace(rayOut, depth + 1, object);
-		}
-		return material->emit();
-	}
-
-	Color sample(Object& objects, Camera& camera, double x, double y)
-	{
-		return trace(camera.genRay(x, 1. - y), 0, objects);
-	}
-}
-
 graph::ColorBGRA8bit displayColor(const RayTrace::Color color)
 {
 	UINT8 r = UINT8(pow(RayTrace::clamp(color.x, 0., 1.), 1. / GAMMA) * 255. + .5);
@@ -101,200 +62,6 @@ graph::ColorBGRA8bit displayColor(const RayTrace::Color color)
 	UINT8 b = UINT8(pow(RayTrace::clamp(color.z, 0., 1.), 1. / GAMMA) * 255. + .5);
 	return graph::ColorBGRA8bit{ b,g,r,255 };
 }
-
-class RenderScene final :public graph::Scene
-{
-public:
-	~RenderScene() override
-	{
-		stopFlag = true;
-		while (runThread) {}
-		delete[] canvas;
-		delete[] canvasColor;
-	}
-	RenderScene(const int canvasW, const int canvasH, RayTrace::Camera& camera, RayTrace::Object& scene) : canvasWidth(canvasW), canvasHeight(canvasH), camera(camera), scene(scene)
-	{
-		canvas = new graph::ColorBGRA8bit[canvasW * canvasH];
-		canvasColor = new RayTrace::Color[canvasW * canvasH];
-	}
-
-	RenderScene(const RenderScene&) = delete;
-	RenderScene& operator=(const RenderScene&) = delete;
-	RenderScene(RenderScene&&) = default;
-	RenderScene& operator=(RenderScene&&) = default;
-
-	void init(graph::D2DGraphics*) override
-	{
-		auto samplePart = [=](const int mod) {
-			for (int sppi = 1; process[mod] < SPP; sppi++) {
-				for (int posy = mod; !this->stopFlag && posy < canvasHeight; posy += concur)
-				{
-					for (int posx = 0; !this->stopFlag && posx < canvasWidth; posx++)
-					{
-						const int pos = posy * canvasWidth + posx;
-						double ux = static_cast<double>(posx + RayTrace::randomReal()) / static_cast<double>(canvasWidth);
-						double uy = static_cast<double>(posy + RayTrace::randomReal()) / static_cast<double>(canvasHeight);
-						RayTrace::Color rc = canvasColor[pos] + sample(scene, camera, ux, uy);
-						canvasColor[pos] = rc;
-						canvas[pos] = displayColor(rc / sppi);
-					}
-				}
-				process[mod] = sppi;
-			}
-			--this->runThread;
-		};
-		std::fill_n(canvasColor, canvasHeight * canvasWidth, RayTrace::Color{ 0., 0., 0. });
-		stopFlag = false;
-		runThread = 0;
-		renderPool.clear();
-		renderPool.reserve(concur);
-		process.clear();
-		process.resize(concur, 0);
-		startTime = clock();
-		for (int i = 0; i < concur; i++)
-		{
-			renderPool.emplace_back(samplePart, i);
-			renderPool.back().detach();
-			++runThread;
-		}
-	}
-	void update(graph::D2DGraphics* g) override
-	{
-#ifdef CAMERA_CAN_MOVE
-		bool moveCamera = false;
-		auto state = g->get_keyboard_state();
-		auto newCameraEye = cameraEye;
-		if (state.W)
-		{
-			newCameraEye.y += 0.1;
-			moveCamera = true;
-		}
-		if (state.S)
-		{
-			newCameraEye.y -= 0.1;
-			moveCamera = true;
-		}
-		if (state.A)
-		{
-			newCameraEye.x -= 0.1;
-			moveCamera = true;
-		}
-		if (state.D)
-		{
-			newCameraEye.x += 0.1;
-			moveCamera = true;
-		}
-		if (state.Q)
-		{
-			newCameraEye.z += 0.1;
-			moveCamera = true;
-		}
-		if (state.E)
-		{
-			newCameraEye.z -= 0.1;
-			moveCamera = true;
-		}
-
-		if (moveCamera)
-		{
-			g->pause();
-			cameraEye = newCameraEye;
-			reRender();
-			g->resume();
-		}
-#endif
-		if (runThread != 0) {
-			refresh_process();
-		}
-#ifdef SAVE_IMAGE
-		else if (!timePrint)
-		{
-			timePrint = true;
-			auto t = clock() - startTime;
-			printf_s("%dh%dm%ds%dms\n", t / 3600000, (t % 3600000) / 60000, (t % 60000) / 1000, t % 1000);
-			FILE* f;
-			time_t timer;
-			time(&timer);
-			tm tblock;
-			gmtime_s(&tblock, &timer);
-			int year = tblock.tm_year + 1900;
-			int mon = tblock.tm_mon + 1;
-			int day = tblock.tm_mday;
-			int hour = tblock.tm_hour + 8;
-			int min = tblock.tm_min;
-			int sec = tblock.tm_sec;
-			char filename[255];
-			auto attr = GetFileAttributes(TEXT("..\\Out"));
-			if (attr == INVALID_FILE_ATTRIBUTES || !(attr & FILE_ATTRIBUTE_DIRECTORY))
-			{
-				if (!CreateDirectory(TEXT("..\\Out"), NULL))
-				{
-					printf_s("Create Directory Fail!\n");
-					return;
-				}
-			}
-			sprintf_s(filename, R"(..\Out\%04d-%02d-%02d-%02d-%02d-%02d.png)", year, mon, day, hour, min, sec);
-			fopen_s(&f, filename, "wb");
-			if (f == nullptr)
-			{
-				printf_s("%s Open Fail!\n", filename);
-			}
-			else {
-				svpng(f, SCREEN_W, SCREEN_H, (UINT8*)canvas, 1);
-				fclose(f);
-				printf_s("%s Saved!\n", filename);
-			}
-		}
-#endif
-	}
-	void render(graph::D2DGraphics* g) override
-	{
-		g->clear(graph::COLORS::Black);
-		const graph::Bitmap bitmap = g->create_image_from_memory(
-			graph::Size{ static_cast<float>(canvasWidth) , static_cast<float>(canvasHeight) }, canvas);
-		g->draw_image(graph::Rect{ 0,0,static_cast<float>(canvasWidth),static_cast<float>(canvasHeight) }, bitmap);
-	}
-
-	// call this in pausing
-	void reRender()
-	{
-		stopFlag = true;
-		while (runThread) {}
-		init(nullptr);
-	}
-private:
-	void refresh_process()
-	{
-		if (bar_start) {
-			printf_s("\033[%lldA", process.size());
-		}
-		else
-		{
-			bar_start = true;
-		}
-		auto t = clock() - startTime;
-		for (auto i = 0; i < process.size(); i++)
-		{
-			auto spf = 0.001 * t / process[i];
-			int remain = (SPP - process[i]) * spf;
-			printf_s("#%d[%d/%d][%.2f spf][%dm%ds]        \n", i, process[i], SPP, spf, remain / 60, remain % 60);
-		}
-	}
-	bool bar_start = false;
-	graph::ColorBGRA8bit* canvas = nullptr;
-	RayTrace::Color* canvasColor = nullptr;
-	int canvasWidth, canvasHeight;
-	std::vector<std::thread> renderPool;
-	std::vector<int> process;
-	std::atomic_bool stopFlag = false;
-	std::atomic_int runThread = 0;
-	clock_t startTime;
-	bool timePrint = false;
-public:
-	RayTrace::Camera& camera;
-	RayTrace::Object& scene;
-	const int concur = std::thread::hardware_concurrency();
-};
 
 bool OpenANSIControlChar()
 {
@@ -309,12 +76,43 @@ bool OpenANSIControlChar()
 	return true;
 }
 
+void samplerPort(RayTrace::Render render, graph::ColorBGRA8bit* out, RayTrace::Color* buf, const UINT mod, const UINT concur, UINT* currentSPP)
+{
+	for (*currentSPP = 1; *currentSPP <= render.SPP; (*currentSPP)++)
+	{
+		for (auto posy = mod; posy < render.screenHeight; posy += concur)
+		{
+			for (auto posx = 0u; posx < render.screenWidth; posx++) {
+				const int pos = posy * render.screenWidth + posx;
+				const auto color = render.sample(posx, posy);
+				buf[pos] = buf[pos] + (color - buf[pos]) / static_cast<float>(*currentSPP);
+				out[pos] = displayColor(buf[pos]);
+			}
+		}
+	}
+}
+
 int main()
 {
 	OpenANSIControlChar();
 	using namespace std;
 	using namespace RayTrace;
 	srand(time(nullptr));
+
+	auto* canvas = new graph::ColorBGRA8bit[SCREEN_H * SCREEN_W];
+	auto* canvasBuf = new Color[SCREEN_H * SCREEN_W];
+
+	ImgShow imgShow(canvas, SCREEN_W, SCREEN_H);
+
+	graph::GraphSetting setting;
+	setting.width = SCREEN_W;
+	setting.height = SCREEN_H;
+	setting.window_caption = L"Path Trace";
+	setting.Scenes = { &imgShow };
+	setting.first_show_scene = 0;
+	graph::D2DGraphics g(setting);
+
+	//=================================================//
 
 	Camera camera = Camera();
 	camera
@@ -481,15 +279,98 @@ int main()
 
 	BVH scene(room.objects, 0, room.objects.size());
 
-	RenderScene light(SCREEN_W, SCREEN_H, camera, scene);
+	//======================================//
 
-	printf_s("Hardware Concurrency : %d\n", light.concur);
+	Render render;
+	render.scene = &scene;
+	render.SPP = SPP;
+	render.screenHeight = SCREEN_H;
+	render.screenWidth = SCREEN_W;
+	render.camera = &camera;
+	render.maxDepth = MAX_DEPTH;
+	render.minDistance = MIN_DISTANCE;
 
-	graph::GraphSetting setting;
-	setting.width = SCREEN_W;
-	setting.height = SCREEN_H;
-	setting.window_caption = L"Path Trace";
-	setting.Scenes = { &light };
-	setting.first_show_scene = 0;
-	graph::D2DGraphics g(setting);
+	const auto concur = std::thread::hardware_concurrency();
+	std::vector<std::thread> renderThreads;
+	UINT* renderProcess = new UINT[concur];
+
+	for (auto i = 0u; i < concur; i++)
+	{
+		renderThreads.emplace_back(samplerPort, render, canvas, canvasBuf, i, concur, renderProcess + i);
+	}
+
+	auto startTime = clock();
+
+	imgShow.onUpdate = [startTime, concur, &renderProcess]
+	{
+		static bool allFin = true;
+		static bool barStart = false;
+		if (allFin && barStart)
+		{
+			return;
+		}
+		if (barStart) {
+			printf_s("\033[%dA", concur);
+		}
+		else
+		{
+			barStart = true;
+		}
+		auto t = clock() - startTime;
+		allFin = true;
+		for (auto i = 0; i < concur; i++)
+		{
+			if (renderProcess[i] > SPP)
+			{
+				printf_s("#%d[%d/%d][Finish]        \n", i, SPP, SPP);
+				continue;
+			}
+			allFin = false;
+			auto spf = 0.001 * t / renderProcess[i];
+			int remain = (SPP - renderProcess[i]) * spf;
+			printf_s("#%d[%d/%d][%.2f spf][%dm%ds]        \n", i, renderProcess[i], SPP, spf, remain / 60, remain % 60);
+		}
+	};
+
+	for (auto& t : renderThreads)
+	{
+		t.join();
+	}
+	
+	auto t = clock() - startTime;
+	printf_s("%dh%dm%ds%dms\n", t / 3600000, (t % 3600000) / 60000, (t % 60000) / 1000, t % 1000);
+	FILE* f;
+	time_t timer;
+	time(&timer);
+	tm tblock;
+	gmtime_s(&tblock, &timer);
+	int year = tblock.tm_year + 1900;
+	int mon = tblock.tm_mon + 1;
+	int day = tblock.tm_mday;
+	int hour = tblock.tm_hour + 8;
+	int min = tblock.tm_min;
+	int sec = tblock.tm_sec;
+	char filename[255];
+
+	auto attr = GetFileAttributes(TEXT("..\\Out"));
+	if (attr == INVALID_FILE_ATTRIBUTES || !(attr & FILE_ATTRIBUTE_DIRECTORY))
+	{
+		if (!CreateDirectory(TEXT("..\\Out"), NULL))
+		{
+			printf_s("Create Directory Fail!\n");
+		}
+	}
+
+	sprintf_s(filename, R"(..\Out\%04d-%02d-%02d-%02d-%02d-%02d.png)", year, mon, day, hour, min, sec);
+	fopen_s(&f, filename, "wb");
+	if (f == nullptr) {
+		printf_s("%s Open Fail!\n", filename);
+	}
+	else {
+		svpng(f, SCREEN_W, SCREEN_H, (UINT8*)canvas, 1);
+		fclose(f);
+		printf_s("%s Saved!\n", filename);
+	}
+
+
 }

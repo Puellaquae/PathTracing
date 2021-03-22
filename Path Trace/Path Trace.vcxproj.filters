@@ -46,6 +46,12 @@
     <Filter Include="源文件\Utils">
       <UniqueIdentifier>{5fc68c7f-441e-48f3-a5e7-bbed9bb9250c}</UniqueIdentifier>
     </Filter>
+    <Filter Include="头文件\Represent">
+      <UniqueIdentifier>{caac2196-ac76-4a19-9a1c-5f7121a5d233}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="源文件\Represent">
+      <UniqueIdentifier>{f72ff38f-7066-45b2-99c0-32df5cceb571}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -104,6 +110,12 @@
     </ClCompile>
     <ClCompile Include="DOFCamera.cpp">
       <Filter>源文件\Camera</Filter>
+    </ClCompile>
+    <ClCompile Include="Render.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="ImgShow.cpp">
+      <Filter>源文件\Represent</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -199,6 +211,12 @@
     </ClInclude>
     <ClInclude Include="HitResult.h">
       <Filter>头文件\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="ImgShow.h">
+      <Filter>头文件\Represent</Filter>
+    </ClInclude>
+    <ClInclude Include="Render.h">
+      <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

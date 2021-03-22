@@ -163,11 +163,13 @@
     <ClCompile Include="Dielectric.cpp" />
     <ClCompile Include="Diffuse.cpp" />
     <ClCompile Include="DOFCamera.cpp" />
+    <ClCompile Include="ImgShow.cpp" />
     <ClCompile Include="Isotropic.cpp" />
     <ClCompile Include="Lambertian.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Metal.cpp" />
     <ClCompile Include="Math.cpp" />
+    <ClCompile Include="Render.cpp" />
     <ClCompile Include="RotateZ.cpp" />
     <ClCompile Include="Sphere.cpp" />
     <ClCompile Include="Translate.cpp" />
@@ -191,6 +193,7 @@
     <ClInclude Include="DiffuseLight.h" />
     <ClInclude Include="DOFCamera.h" />
     <ClInclude Include="HitResult.h" />
+    <ClInclude Include="ImgShow.h" />
     <ClInclude Include="Isotropic.h" />
     <ClInclude Include="Lambertian.h" />
     <ClInclude Include="Metal.h" />
@@ -198,6 +201,7 @@
     <ClInclude Include="Math.h" />
     <ClInclude Include="Object.h" />
     <ClInclude Include="Ray.h" />
+    <ClInclude Include="Render.h" />
     <ClInclude Include="RotateZ.h" />
     <ClInclude Include="SolidColor.h" />
     <ClInclude Include="Sphere.h" />
