@@ -169,7 +169,7 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Metal.cpp" />
     <ClCompile Include="Math.cpp" />
-    <ClCompile Include="Render.cpp" />
+    <ClCompile Include="PathTracer.cpp" />
     <ClCompile Include="RotateZ.cpp" />
     <ClCompile Include="Sphere.cpp" />
     <ClCompile Include="Translate.cpp" />
@@ -177,6 +177,7 @@
     <ClCompile Include="Union.cpp" />
     <ClCompile Include="Vec2.cpp" />
     <ClCompile Include="Vec3.cpp" />
+    <ClCompile Include="Occlusion.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AABB.h" />
@@ -200,6 +201,7 @@
     <ClInclude Include="Material.h" />
     <ClInclude Include="Math.h" />
     <ClInclude Include="Object.h" />
+    <ClInclude Include="PathTracer.h" />
     <ClInclude Include="Ray.h" />
     <ClInclude Include="Render.h" />
     <ClInclude Include="RotateZ.h" />
@@ -212,6 +214,7 @@
     <ClInclude Include="Union.h" />
     <ClInclude Include="Vec2.h" />
     <ClInclude Include="Vec3.h" />
+    <ClInclude Include="Occlusion.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

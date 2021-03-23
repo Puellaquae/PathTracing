@@ -52,6 +52,12 @@
     <Filter Include="源文件\Represent">
       <UniqueIdentifier>{f72ff38f-7066-45b2-99c0-32df5cceb571}</UniqueIdentifier>
     </Filter>
+    <Filter Include="头文件\Render">
+      <UniqueIdentifier>{c6a12c6a-06de-4af0-8c8b-9862d7abfc06}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="源文件\Render">
+      <UniqueIdentifier>{c66fa852-bcd4-4cce-b424-53eb55f20c29}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -111,11 +117,14 @@
     <ClCompile Include="DOFCamera.cpp">
       <Filter>源文件\Camera</Filter>
     </ClCompile>
-    <ClCompile Include="Render.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
     <ClCompile Include="ImgShow.cpp">
       <Filter>源文件\Represent</Filter>
+    </ClCompile>
+    <ClCompile Include="PathTracer.cpp">
+      <Filter>源文件\Render</Filter>
+    </ClCompile>
+    <ClCompile Include="Occlusion.cpp">
+      <Filter>源文件\Render</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -216,7 +225,13 @@
       <Filter>头文件\Represent</Filter>
     </ClInclude>
     <ClInclude Include="Render.h">
-      <Filter>头文件</Filter>
+      <Filter>头文件\Render</Filter>
+    </ClInclude>
+    <ClInclude Include="PathTracer.h">
+      <Filter>头文件\Render</Filter>
+    </ClInclude>
+    <ClInclude Include="Occlusion.h">
+      <Filter>头文件\Render</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

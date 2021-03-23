@@ -25,6 +25,8 @@
 #include "DiffuseLight.h"
 #include "Lambertian.h"
 #include "Metal.h"
+#include "PathTracer.h"
+#include "Occlusion.h"
 #include "Render.h"
 #include "RotateZ.h"
 #include "SolidColor.h"
@@ -33,11 +35,7 @@
 #include "Triangle.h"
 #include "Union.h"
 
-//#define CAMERA_CAN_MOVE
-
 #define SAVE_IMAGE
-
-#define ENABLE_RR
 
 // 每像素点采样数
 constexpr int SPP = 1024;
@@ -76,15 +74,15 @@ bool OpenANSIControlChar()
 	return true;
 }
 
-void samplerPort(RayTrace::Render render, graph::ColorBGRA8bit* out, RayTrace::Color* buf, const UINT mod, const UINT concur, UINT* currentSPP)
+void samplerPort(const RayTrace::Render* render, graph::ColorBGRA8bit* out, RayTrace::Color* buf, const UINT mod, const UINT concur, UINT* currentSPP)
 {
-	for (*currentSPP = 1; *currentSPP <= render.SPP; (*currentSPP)++)
+	for (*currentSPP = 1; *currentSPP <= render->SPP; (*currentSPP)++)
 	{
-		for (auto posy = mod; posy < render.screenHeight; posy += concur)
+		for (auto posy = mod; posy < render->screenHeight; posy += concur)
 		{
-			for (auto posx = 0u; posx < render.screenWidth; posx++) {
-				const int pos = posy * render.screenWidth + posx;
-				const auto color = render.sample(posx, posy);
+			for (auto posx = 0u; posx < render->screenWidth; posx++) {
+				const int pos = posy * render->screenWidth + posx;
+				const auto color = render->sample(posx, posy);
 				buf[pos] = buf[pos] + (color - buf[pos]) / static_cast<float>(*currentSPP);
 				out[pos] = displayColor(buf[pos]);
 			}
@@ -281,7 +279,7 @@ int main()
 
 	//======================================//
 
-	Render render;
+	Occlusion render;
 	render.scene = &scene;
 	render.SPP = SPP;
 	render.screenHeight = SCREEN_H;
@@ -289,6 +287,7 @@ int main()
 	render.camera = &camera;
 	render.maxDepth = MAX_DEPTH;
 	render.minDistance = MIN_DISTANCE;
+	render.attenuation = 0.8f;
 
 	const auto concur = std::thread::hardware_concurrency();
 	std::vector<std::thread> renderThreads;
@@ -296,7 +295,7 @@ int main()
 
 	for (auto i = 0u; i < concur; i++)
 	{
-		renderThreads.emplace_back(samplerPort, render, canvas, canvasBuf, i, concur, renderProcess + i);
+		renderThreads.emplace_back(samplerPort, &render, canvas, canvasBuf, i, concur, renderProcess + i);
 	}
 
 	auto startTime = clock();
@@ -336,6 +335,8 @@ int main()
 	{
 		t.join();
 	}
+
+#ifdef SAVE_IMAGE
 	
 	auto t = clock() - startTime;
 	printf_s("%dh%dm%ds%dms\n", t / 3600000, (t % 3600000) / 60000, (t % 60000) / 1000, t % 1000);
@@ -372,5 +373,6 @@ int main()
 		printf_s("%s Saved!\n", filename);
 	}
 
+#endif
 
 }

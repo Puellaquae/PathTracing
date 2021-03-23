@@ -1,11 +1,11 @@
-#include "Render.h"
+#include "PathTracer.h"
 
 #include "Colors.h"
 #include "Material.h"
 
 namespace RayTrace
 {
-	Color trace(const Ray r, int depth, Object* object,const unsigned maxDepth,const float minDistance)
+	Color pathTrace(const Ray r, int depth, Object* object,const unsigned maxDepth,const float minDistance)
 	{
 		if (depth > maxDepth)
 		{
@@ -35,16 +35,16 @@ namespace RayTrace
 				}
 				p = 1.f / p;
 			}
-			return p * material->emit() + p * albedo * trace(rayOut, depth + 1, object, maxDepth, minDistance);
+			return p * material->emit() + p * albedo * pathTrace(rayOut, depth + 1, object, maxDepth, minDistance);
 		}
 		return material->emit();
 	}
 
-	Color Render::sample(unsigned x, unsigned y)
+	Color PathTracer::sample(unsigned x, unsigned y) const
 	{
 		auto ux = static_cast<float>(x + randomReal()) / static_cast<float>(screenWidth);
 		auto uy = static_cast<float>(y + randomReal()) / static_cast<float>(screenHeight);
-		return trace(camera->genRay(ux, 1.f - uy), 0, scene, maxDepth, minDistance);
+		return pathTrace(camera->genRay(ux, 1.f - uy), 0, scene, maxDepth, minDistance);
 	}
 }
 

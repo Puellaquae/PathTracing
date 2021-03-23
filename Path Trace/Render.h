@@ -10,9 +10,8 @@ namespace RayTrace
 		Camera* camera;
 		unsigned screenWidth, screenHeight;
 		unsigned SPP;
-		unsigned currentSPP = 0;
 		unsigned maxDepth = 128;
 		float minDistance = 0.0001;
-		Color sample(unsigned x, unsigned y);
+		[[nodiscard]] virtual Color sample(unsigned x, unsigned y) const = 0;
 	};
 }
