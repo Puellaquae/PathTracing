@@ -42,8 +42,8 @@ namespace RayTrace
 
 	Color PathTracer::sample(unsigned x, unsigned y) const
 	{
-		auto ux = static_cast<float>(x + randomReal()) / static_cast<float>(screenWidth);
-		auto uy = static_cast<float>(y + randomReal()) / static_cast<float>(screenHeight);
+		auto ux = (x + randomReal()) / static_cast<float>(screenWidth);
+		auto uy = (y + randomReal()) / static_cast<float>(screenHeight);
 		return pathTrace(camera->genRay(ux, 1.f - uy), 0, scene, maxDepth, minDistance);
 	}
 }
