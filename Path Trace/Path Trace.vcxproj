@@ -172,6 +172,7 @@
     <ClCompile Include="PathTracer.cpp" />
     <ClCompile Include="RotateZ.cpp" />
     <ClCompile Include="Sphere.cpp" />
+    <ClCompile Include="TiltShiftCamera.cpp" />
     <ClCompile Include="Translate.cpp" />
     <ClCompile Include="Triangle.cpp" />
     <ClCompile Include="Union.cpp" />
@@ -209,12 +210,18 @@
     <ClInclude Include="Sphere.h" />
     <ClInclude Include="svpng.h" />
     <ClInclude Include="Texture.h" />
+    <ClInclude Include="TiltShiftCamera.h" />
     <ClInclude Include="Translate.h" />
     <ClInclude Include="Triangle.h" />
     <ClInclude Include="Union.h" />
     <ClInclude Include="Vec2.h" />
     <ClInclude Include="Vec3.h" />
     <ClInclude Include="Occlusion.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Direct2DKit\Graphics\Graphics.vcxproj">
+      <Project>{c5157c44-9bbb-4ddf-9f50-c1894fb7c76c}</Project>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

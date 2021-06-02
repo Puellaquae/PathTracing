@@ -4,8 +4,7 @@
 #include <thread>
 #include <Windows.h>
 
-#pragma comment(lib, "D2DKit/x64/Graphics.lib")
-#include "D2DKit/graph.h"
+#include "../Direct2DKit/Graphics/graph.h"
 #include "ImgShow.h"
 
 #undef min
@@ -15,7 +14,7 @@
 #include "Material.h"
 #include "Object.h"
 #include "Texture.h"
-#include "Camera.h"
+#include "TiltShiftCamera.h"
 #include "Checker.h"
 #include "Vec2.h"
 #include "Vec3.h"
@@ -38,7 +37,7 @@
 #define SAVE_IMAGE
 
 // 每像素点采样数
-constexpr int SPP = 1024;
+constexpr int SPP = 512;
 
 // 最大递归深度
 constexpr int MAX_DEPTH = 128;
@@ -112,10 +111,11 @@ int main()
 
 	//=================================================//
 
-	Camera camera = Camera();
+	TiltShiftCamera camera = TiltShiftCamera();
 	camera
-		.lookTo(Point{ 0.,-50.,20. }, Point{ 0.,1.,0. }, Vec3{ 0.,0.,1. })
+		.lookAt(Point{ 0.,-50.,50. }, Point{ 0.,20.,40. }, Vec3{ 0.,0.,1. })
 		.fov(60.);
+	camera.shift = Vec3{ 0.,0.,-0.75};
 
 	SolidColor white{ WHITE * .75 };
 	SolidColor whiteAll{ WHITE };
@@ -279,7 +279,7 @@ int main()
 
 	//======================================//
 
-	Occlusion render;
+	PathTracer render;
 	render.scene = &scene;
 	render.SPP = SPP;
 	render.screenHeight = SCREEN_H;
@@ -287,7 +287,7 @@ int main()
 	render.camera = &camera;
 	render.maxDepth = MAX_DEPTH;
 	render.minDistance = MIN_DISTANCE;
-	render.attenuation = 0.8f;
+	//render.attenuation = 0.5f;
 
 	const auto concur = std::thread::hardware_concurrency();
 	std::vector<std::thread> renderThreads;
@@ -337,7 +337,7 @@ int main()
 	}
 
 #ifdef SAVE_IMAGE
-	
+
 	auto t = clock() - startTime;
 	printf_s("%dh%dm%ds%dms\n", t / 3600000, (t % 3600000) / 60000, (t % 60000) / 1000, t % 1000);
 	FILE* f;

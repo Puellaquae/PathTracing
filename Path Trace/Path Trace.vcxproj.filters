@@ -126,6 +126,9 @@
     <ClCompile Include="Occlusion.cpp">
       <Filter>源文件\Render</Filter>
     </ClCompile>
+    <ClCompile Include="TiltShiftCamera.cpp">
+      <Filter>源文件\Camera</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="svpng.h">
@@ -232,6 +235,9 @@
     </ClInclude>
     <ClInclude Include="Occlusion.h">
       <Filter>头文件\Render</Filter>
+    </ClInclude>
+    <ClInclude Include="TiltShiftCamera.h">
+      <Filter>头文件\Camera</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

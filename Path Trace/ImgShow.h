@@ -1,6 +1,6 @@
 #pragma once
 
-#include "D2DKit/graph.h"
+#include "../Direct2DKit/Graphics/graph.h"
 
 class ImgShow : public graph::Scene
 {
