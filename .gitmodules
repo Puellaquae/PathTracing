@@ -1,0 +1,3 @@
+[submodule "Direct2DKit"]
+	path = Direct2DKit
+	url = https://github.com/Puellaquae/Direct2DKit.git
