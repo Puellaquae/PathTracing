@@ -1,15 +1,15 @@
 #pragma once
-#include "Object.h"
+#include "IObject.h"
 
 namespace RayTrace
 {
-	struct RotateZ :Object
+	struct RotateZ :IObject
 	{
 		AABB box;
-		Object* obj;
+		IObject* obj;
 		Real theta;
 		
-		RotateZ(Object* o, Real theta);
+		RotateZ(IObject* o, Real theta);
 
 		bool hit(Ray ray, Real disMin, Real disMax, HitResult& hitResult) override;
 		bool boundingBox(AABB& out) override;

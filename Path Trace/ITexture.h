@@ -4,7 +4,7 @@
 
 namespace RayTrace
 {
-	struct Texture
+	struct ITexture
 	{
 		virtual Color sample(Coord coord) = 0;
 	};

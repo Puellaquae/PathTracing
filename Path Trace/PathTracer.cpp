@@ -1,11 +1,11 @@
 #include "PathTracer.h"
 
 #include "Colors.h"
-#include "Material.h"
+#include "IMaterial.h"
 
 namespace RayTrace
 {
-	Color pathTrace(const Ray r, int depth, Object* object,const unsigned maxDepth,const float minDistance)
+	Color pathTrace(const Ray r, int depth, IObject* object,const unsigned maxDepth,const float minDistance)
 	{
 		if (depth > maxDepth)
 		{

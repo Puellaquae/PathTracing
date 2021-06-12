@@ -1,9 +1,9 @@
 #pragma once
-#include "Render.h"
+#include "IRender.h"
 
 namespace RayTrace
 {
-	struct PathTracer : Render
+	struct PathTracer : IRender
 	{
 		[[nodiscard]] Color sample(unsigned x, unsigned y) const override;
 	};

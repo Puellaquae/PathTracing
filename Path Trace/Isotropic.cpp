@@ -1,5 +1,5 @@
 #include "Isotropic.h"
-#include "Texture.h"
+#include "ITexture.h"
 
 namespace RayTrace
 {

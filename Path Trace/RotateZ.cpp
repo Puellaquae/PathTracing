@@ -4,8 +4,8 @@
 
 namespace RayTrace
 {
-	RotateZ::RotateZ(Object* o, Real theta) :
-		Object(nullptr), obj(o), theta(theta)
+	RotateZ::RotateZ(IObject* o, Real theta) :
+		IObject(nullptr), obj(o), theta(theta)
 	{
 		if (!obj->boundingBox(box))
 		{

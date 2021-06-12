@@ -1,15 +1,16 @@
 #pragma once
 #include "Camera.h"
-#include "Object.h"
+#include "IObject.h"
 
 namespace RayTrace
 {
-	struct Render
+	struct IRender
 	{
-		Object* scene;
+		IObject* scene;
 		Camera* camera;
 		unsigned screenWidth, screenHeight;
 		unsigned SPP;
+		double gamma = 2.2;
 		unsigned maxDepth = 128;
 		float minDistance = 0.0001;
 		[[nodiscard]] virtual Color sample(unsigned x, unsigned y) const = 0;

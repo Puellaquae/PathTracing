@@ -1,5 +1,5 @@
 #include "Lambertian.h"
-#include "Texture.h"
+#include "ITexture.h"
 
 namespace RayTrace
 {

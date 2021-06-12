@@ -1,9 +1,9 @@
 #pragma once
-#include "Texture.h"
+#include "ITexture.h"
 
 namespace RayTrace
 {
-	struct Checker : Texture
+	struct Checker : ITexture
 	{
 		Color c1, c2;
 		Real blockW, blockH;

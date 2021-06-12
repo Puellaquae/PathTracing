@@ -6,13 +6,13 @@
 
 namespace RayTrace
 {
-	struct Object
+	struct IObject
 	{
-		explicit Object(Material* material) :material(material) {}
+		explicit IObject(IMaterial* material) :material(material) {}
 		
 		virtual bool hit(Ray ray, Real disMin, Real disMax, HitResult& hitResult) = 0;
 		virtual bool boundingBox(AABB& out) = 0;
 		
-		Material* material;
+		IMaterial* material;
 	};
 }

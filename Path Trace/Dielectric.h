@@ -1,25 +1,25 @@
 #pragma once
-#include "Material.h"
+#include "IMaterial.h"
 
 namespace RayTrace
 {
-	struct DielectricFresnel :Material
+	struct DielectricFresnel :IMaterial
 	{
-		Texture* absorb;
+		ITexture* absorb;
 		Real refraction;
 		
-		DielectricFresnel(Real indexOfRefraction, Texture* absorb) :absorb(absorb), refraction(indexOfRefraction) {}
+		DielectricFresnel(Real indexOfRefraction, ITexture* absorb) :absorb(absorb), refraction(indexOfRefraction) {}
 
 		bool scatter(Ray rayIn, HitResult hitResult, Ray& rayOut, Color& attenuation) override;
 	};
 
 
-	struct DielectricSchlick :Material
+	struct DielectricSchlick :IMaterial
 	{
-		Texture* absorb;
+		ITexture* absorb;
 		Real refraction;
 		
-		DielectricSchlick(Real indexOfRefraction, Texture* absorb) :absorb(absorb), refraction(indexOfRefraction) {}
+		DielectricSchlick(Real indexOfRefraction, ITexture* absorb) :absorb(absorb), refraction(indexOfRefraction) {}
 
 		bool scatter(Ray rayIn, HitResult hitResult, Ray& rayOut, Color& attenuation) override;
 	};

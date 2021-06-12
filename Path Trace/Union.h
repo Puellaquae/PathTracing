@@ -2,17 +2,17 @@
 #include <initializer_list>
 #include <vector>
 
-#include "Object.h"
+#include "IObject.h"
 
 namespace RayTrace
 {
-	struct Union : Object
+	struct Union : IObject
 	{
-		std::vector<Object*> objects;
+		std::vector<IObject*> objects;
 		
-		Union(std::initializer_list<Object*> objects) :
-			Object(nullptr), objects(objects) { }
-		Union() :Object(nullptr) {}
+		Union(std::initializer_list<IObject*> objects) :
+			IObject(nullptr), objects(objects) { }
+		Union() :IObject(nullptr) {}
 
 		bool hit(Ray ray, Real disMin, Real disMax, HitResult& hitResult) override;
 		bool boundingBox(AABB& out) override;

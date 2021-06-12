@@ -1,13 +1,13 @@
 #pragma once
-#include "Material.h"
+#include "IMaterial.h"
 
 namespace RayTrace
 {
-	struct Diffuse :Material
+	struct Diffuse :IMaterial
 	{
-		Texture* albedo;
+		ITexture* albedo;
 
-		explicit Diffuse(Texture* albedoTexture) :albedo(albedoTexture) {}
+		explicit Diffuse(ITexture* albedoTexture) :albedo(albedoTexture) {}
 
 		bool scatter(Ray rayIn, HitResult hitResult, Ray& rayOut, Color& attenuation) override;
 	};

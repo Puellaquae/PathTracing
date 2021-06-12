@@ -1,9 +1,9 @@
 #pragma once
-#include "Texture.h"
+#include "ITexture.h"
 
 namespace RayTrace
 {
-	struct SolidColor : Texture
+	struct SolidColor : ITexture
 	{
 		Color color;
 		

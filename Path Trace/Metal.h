@@ -1,14 +1,14 @@
 #pragma once
-#include "Material.h"
+#include "IMaterial.h"
 
 namespace RayTrace
 {
-	struct Metal :Material
+	struct Metal :IMaterial
 	{
-		Texture* albedo;
+		ITexture* albedo;
 		Real fuzzy;
 
-		explicit Metal(Texture* albedoTexture, Real f = 0.) :albedo(albedoTexture), fuzzy(clamp(f, 0.f, 1.f)) {}
+		explicit Metal(ITexture* albedoTexture, Real f = 0.) :albedo(albedoTexture), fuzzy(clamp(f, 0.f, 1.f)) {}
 
 		bool scatter(Ray rayIn, HitResult hitResult, Ray& rayOut, Color& attenuation) override;
 	};

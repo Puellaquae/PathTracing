@@ -1,9 +1,9 @@
 #pragma once
-#include "Material.h"
+#include "IMaterial.h"
 
 namespace RayTrace
 {
-	struct DiffuseLight :Material
+	struct DiffuseLight :IMaterial
 	{
 		Color emission;
 

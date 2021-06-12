@@ -5,7 +5,7 @@
 
 namespace RayTrace
 {
-	inline bool boxCmpX(Object* a, Object* b)
+	inline bool boxCmpX(IObject* a, IObject* b)
 	{
 		AABB ba, bb;
 		if (!a->boundingBox(ba) || !b->boundingBox(bb))
@@ -16,7 +16,7 @@ namespace RayTrace
 		return ba.minimum.x < bb.minimum.x;
 	}
 
-	inline bool boxCmpY(Object* a, Object* b)
+	inline bool boxCmpY(IObject* a, IObject* b)
 	{
 		AABB ba, bb;
 		if (!a->boundingBox(ba) || !b->boundingBox(bb))
@@ -27,7 +27,7 @@ namespace RayTrace
 		return ba.minimum.y < bb.minimum.y;
 	}
 
-	inline bool boxCmpZ(Object* a, Object* b)
+	inline bool boxCmpZ(IObject* a, IObject* b)
 	{
 		AABB ba, bb;
 		if (!a->boundingBox(ba) || !b->boundingBox(bb))
@@ -38,9 +38,9 @@ namespace RayTrace
 		return ba.minimum.z < bb.minimum.z;
 	}
 	
-	BVH::BVH(std::vector<Object*>& objects, size_t begin, size_t end): Object(nullptr)
+	BVH::BVH(std::vector<IObject*>& objects, size_t begin, size_t end): IObject(nullptr)
 	{
-		std::vector<Object*> objs = objects;
+		std::vector<IObject*> objs = objects;
 		auto axis = randomInt(0, 2);
 		auto cmp = (axis == 0) ? boxCmpX : (axis == 1) ? boxCmpY : boxCmpZ;
 

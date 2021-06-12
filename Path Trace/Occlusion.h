@@ -1,9 +1,9 @@
 #pragma once
-#include "Render.h"
+#include "IRender.h"
 
 namespace RayTrace
 {
-	struct Occlusion : Render
+	struct Occlusion : IRender
 	{
 		Real attenuation;
 		[[nodiscard]] Color sample(unsigned x, unsigned y) const override;

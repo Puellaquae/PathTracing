@@ -1,5 +1,5 @@
 #include "Diffuse.h"
-#include "Texture.h"
+#include "ITexture.h"
 
 namespace RayTrace
 {

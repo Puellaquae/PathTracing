@@ -9,7 +9,7 @@ namespace RayTrace
 {
 	struct HitResult
 	{
-		Object* object;
+		IObject* object;
 		Real distance = REAL_INF;
 		Point position;
 		Coord textureCoord;

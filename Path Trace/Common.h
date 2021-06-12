@@ -3,7 +3,9 @@ namespace RayTrace
 {
 	using Real = float;
 
-	struct Object;
-	struct Material;
-	struct Texture;
+	struct IObject;
+	struct IMaterial;
+	struct ITexture;
+	struct IRender;
+	struct IRepresent;
 }

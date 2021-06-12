@@ -117,9 +117,6 @@
     <ClCompile Include="DOFCamera.cpp">
       <Filter>源文件\Camera</Filter>
     </ClCompile>
-    <ClCompile Include="ImgShow.cpp">
-      <Filter>源文件\Represent</Filter>
-    </ClCompile>
     <ClCompile Include="PathTracer.cpp">
       <Filter>源文件\Render</Filter>
     </ClCompile>
@@ -128,6 +125,12 @@
     </ClCompile>
     <ClCompile Include="TiltShiftCamera.cpp">
       <Filter>源文件\Camera</Filter>
+    </ClCompile>
+    <ClCompile Include="D2DShow.cpp">
+      <Filter>源文件\Represent</Filter>
+    </ClCompile>
+    <ClCompile Include="Console.cpp">
+      <Filter>源文件\Utils</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -155,7 +158,7 @@
     <ClInclude Include="ConstantMedium.h">
       <Filter>头文件\Object</Filter>
     </ClInclude>
-    <ClInclude Include="Object.h">
+    <ClInclude Include="IObject.h">
       <Filter>头文件\Object</Filter>
     </ClInclude>
     <ClInclude Include="RotateZ.h">
@@ -167,10 +170,10 @@
     <ClInclude Include="BVH.h">
       <Filter>头文件\Object</Filter>
     </ClInclude>
-    <ClInclude Include="Material.h">
+    <ClInclude Include="IMaterial.h">
       <Filter>头文件\Material</Filter>
     </ClInclude>
-    <ClInclude Include="Texture.h">
+    <ClInclude Include="ITexture.h">
       <Filter>头文件\Texture</Filter>
     </ClInclude>
     <ClInclude Include="SolidColor.h">
@@ -224,10 +227,7 @@
     <ClInclude Include="HitResult.h">
       <Filter>头文件\Utils</Filter>
     </ClInclude>
-    <ClInclude Include="ImgShow.h">
-      <Filter>头文件\Represent</Filter>
-    </ClInclude>
-    <ClInclude Include="Render.h">
+    <ClInclude Include="IRender.h">
       <Filter>头文件\Render</Filter>
     </ClInclude>
     <ClInclude Include="PathTracer.h">
@@ -238,6 +238,15 @@
     </ClInclude>
     <ClInclude Include="TiltShiftCamera.h">
       <Filter>头文件\Camera</Filter>
+    </ClInclude>
+    <ClInclude Include="IRepresent.h">
+      <Filter>头文件\Represent</Filter>
+    </ClInclude>
+    <ClInclude Include="D2DShow.h">
+      <Filter>头文件\Represent</Filter>
+    </ClInclude>
+    <ClInclude Include="Console.h">
+      <Filter>头文件\Utils</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

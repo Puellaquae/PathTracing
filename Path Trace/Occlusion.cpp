@@ -1,11 +1,11 @@
 #include "Occlusion.h"
 
 #include "Colors.h"
-#include "Material.h"
+#include "IMaterial.h"
 
 namespace RayTrace
 {
-	Color occlusionTrace(const Ray r, int depth, Object* object, const unsigned maxDepth, const float minDistance, const float attenuation)
+	Color occlusionTrace(const Ray r, int depth, IObject* object, const unsigned maxDepth, const float minDistance, const float attenuation)
 	{
 		if (depth > maxDepth)
 		{

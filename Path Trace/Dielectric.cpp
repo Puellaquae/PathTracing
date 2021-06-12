@@ -1,7 +1,7 @@
 #include "Dielectric.h"
 #include <cmath>
 
-#include "Texture.h"
+#include "ITexture.h"
 
 namespace RayTrace
 {

@@ -6,7 +6,7 @@
 
 namespace RayTrace
 {
-	struct Material
+	struct IMaterial
 	{
 		virtual Color emit() { return BLACK; }
 		virtual bool scatter(Ray rayIn, HitResult hitResult, Ray& rayOut, Color& attenuation) = 0;

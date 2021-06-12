@@ -1,16 +1,16 @@
 #pragma once
 #include <vector>
 
-#include "Object.h"
+#include "IObject.h"
 
 namespace RayTrace
 {
-	struct BVH : Object
+	struct BVH : IObject
 	{
-		Object* left, * right;
+		IObject* left, * right;
 		AABB box;
 		
-		BVH(std::vector<Object*>& objects, size_t begin, size_t end);
+		BVH(std::vector<IObject*>& objects, size_t begin, size_t end);
 
 		bool hit(Ray ray, Real disMin, Real disMax, HitResult& hitResult) override;
 		bool boundingBox(AABB& out) override;

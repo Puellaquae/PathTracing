@@ -1,13 +1,13 @@
 #pragma once
-#include "Material.h"
+#include "IMaterial.h"
 
 namespace RayTrace
 {
-	struct Lambertian :Material
+	struct Lambertian :IMaterial
 	{
-		Texture* albedo;
+		ITexture* albedo;
 
-		explicit Lambertian(Texture* albedoTexture) :albedo(albedoTexture) {}
+		explicit Lambertian(ITexture* albedoTexture) :albedo(albedoTexture) {}
 
 		bool scatter(Ray rayIn, HitResult hitResult, Ray& rayOut, Color& attenuation) override;
 	};

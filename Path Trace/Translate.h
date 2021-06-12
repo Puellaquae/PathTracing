@@ -1,14 +1,14 @@
 #pragma once
-#include "Object.h"
+#include "IObject.h"
 
 namespace RayTrace
 {
-	struct Translate :Object
+	struct Translate :IObject
 	{
-		Object* obj;
+		IObject* obj;
 		Vec3 offset;
 		
-		Translate(Object* o, Vec3 offset) :Object(nullptr), obj(o), offset(offset) {}
+		Translate(IObject* o, Vec3 offset) :IObject(nullptr), obj(o), offset(offset) {}
 
 		bool hit(Ray ray, Real disMin, Real disMax, HitResult& hitResult) override;
 		bool boundingBox(AABB& out) override;
