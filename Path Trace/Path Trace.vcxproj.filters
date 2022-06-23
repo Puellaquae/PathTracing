@@ -13,9 +13,6 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
-    <Filter Include="头文件\D2DKit">
-      <UniqueIdentifier>{370f22e3-70f4-4a99-8313-b9c2a0f7cc27}</UniqueIdentifier>
-    </Filter>
     <Filter Include="源文件\Object">
       <UniqueIdentifier>{02d9666c-5376-4c2f-8e67-a7810b42b0ae}</UniqueIdentifier>
     </Filter>
@@ -58,195 +55,222 @@
     <Filter Include="源文件\Render">
       <UniqueIdentifier>{c66fa852-bcd4-4cce-b424-53eb55f20c29}</UniqueIdentifier>
     </Filter>
+    <Filter Include="头文件\Object\Wrapper">
+      <UniqueIdentifier>{cb30558b-45c6-468d-8e2b-1a4b603fa3db}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="头文件\threeparty">
+      <UniqueIdentifier>{9a8f2790-5e3b-47b5-b832-8a33e753a4b9}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="Sphere.cpp">
+    <ClCompile Include="src\object\Sphere.cpp">
       <Filter>源文件\Object</Filter>
     </ClCompile>
-    <ClCompile Include="Triangle.cpp">
+    <ClCompile Include="src\object\Triangle.cpp">
       <Filter>源文件\Object</Filter>
     </ClCompile>
-    <ClCompile Include="Union.cpp">
+    <ClCompile Include="src\object\wrapper\Union.cpp">
       <Filter>源文件\Object</Filter>
     </ClCompile>
-    <ClCompile Include="ConstantMedium.cpp">
+    <ClCompile Include="src\object\wrapper\ConstantMedium.cpp">
       <Filter>源文件\Object</Filter>
     </ClCompile>
-    <ClCompile Include="RotateZ.cpp">
+    <ClCompile Include="src\object\wrapper\RotateZ.cpp">
       <Filter>源文件\Object</Filter>
     </ClCompile>
-    <ClCompile Include="Translate.cpp">
+    <ClCompile Include="src\object\wrapper\Translate.cpp">
       <Filter>源文件\Object</Filter>
     </ClCompile>
-    <ClCompile Include="BVH.cpp">
+    <ClCompile Include="src\object\wrapper\BVH.cpp">
       <Filter>源文件\Object</Filter>
     </ClCompile>
-    <ClCompile Include="Lambertian.cpp">
+    <ClCompile Include="src\material\Lambertian.cpp">
       <Filter>源文件\Material</Filter>
     </ClCompile>
-    <ClCompile Include="Diffuse.cpp">
+    <ClCompile Include="src\material\Diffuse.cpp">
       <Filter>源文件\Material</Filter>
     </ClCompile>
-    <ClCompile Include="Metal.cpp">
+    <ClCompile Include="src\material\Metal.cpp">
       <Filter>源文件\Material</Filter>
     </ClCompile>
-    <ClCompile Include="Isotropic.cpp">
+    <ClCompile Include="src\material\Isotropic.cpp">
       <Filter>源文件\Material</Filter>
     </ClCompile>
-    <ClCompile Include="Dielectric.cpp">
+    <ClCompile Include="src\material\Dielectric.cpp">
       <Filter>源文件\Material</Filter>
     </ClCompile>
-    <ClCompile Include="Camera.cpp">
+    <ClCompile Include="src\camera\Camera.cpp">
       <Filter>源文件\Camera</Filter>
     </ClCompile>
-    <ClCompile Include="AABB.cpp">
+    <ClCompile Include="src\utils\AABB.cpp">
       <Filter>源文件\Utils</Filter>
     </ClCompile>
-    <ClCompile Include="Math.cpp">
+    <ClCompile Include="src\utils\Math.cpp">
       <Filter>源文件\Utils</Filter>
     </ClCompile>
-    <ClCompile Include="Vec2.cpp">
+    <ClCompile Include="src\utils\Vec2.cpp">
       <Filter>源文件\Utils</Filter>
     </ClCompile>
-    <ClCompile Include="Vec3.cpp">
+    <ClCompile Include="src\utils\Vec3.cpp">
       <Filter>源文件\Utils</Filter>
     </ClCompile>
-    <ClCompile Include="DOFCamera.cpp">
+    <ClCompile Include="src\camera\DOFCamera.cpp">
       <Filter>源文件\Camera</Filter>
     </ClCompile>
-    <ClCompile Include="PathTracer.cpp">
+    <ClCompile Include="src\render\PathTracer.cpp">
       <Filter>源文件\Render</Filter>
     </ClCompile>
-    <ClCompile Include="Occlusion.cpp">
+    <ClCompile Include="src\render\Occlusion.cpp">
       <Filter>源文件\Render</Filter>
     </ClCompile>
-    <ClCompile Include="TiltShiftCamera.cpp">
+    <ClCompile Include="src\camera\TiltShiftCamera.cpp">
       <Filter>源文件\Camera</Filter>
     </ClCompile>
-    <ClCompile Include="D2DShow.cpp">
+    <ClCompile Include="src\represent\D2DShow.cpp">
       <Filter>源文件\Represent</Filter>
     </ClCompile>
-    <ClCompile Include="Console.cpp">
+    <ClCompile Include="src\utils\Console.cpp">
       <Filter>源文件\Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="src\utils\ModelLoader.cpp">
+      <Filter>源文件\Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="src\object\Model.cpp">
+      <Filter>源文件\Object</Filter>
+    </ClCompile>
+    <ClCompile Include="src\represent\MoveableD2DShow.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="inc\represent\MoveableD2DShow.h">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="src\material\DiffuseLight.cpp">
+      <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="svpng.h">
+    <ClInclude Include="inc\Common.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="D2DKit\Keyboard.h">
-      <Filter>头文件\D2DKit</Filter>
+    <ClInclude Include="inc\object\Sphere.h">
+      <Filter>头文件\Object</Filter>
     </ClInclude>
-    <ClInclude Include="D2DKit\graph.h">
-      <Filter>头文件\D2DKit</Filter>
+    <ClInclude Include="inc\object\Triangle.h">
+      <Filter>头文件\Object</Filter>
     </ClInclude>
-    <ClInclude Include="Common.h">
+    <ClInclude Include="inc\object\IObject.h">
+      <Filter>头文件\Object</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\material\IMaterial.h">
+      <Filter>头文件\Material</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\texture\ITexture.h">
+      <Filter>头文件\Texture</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\texture\SolidColor.h">
+      <Filter>头文件\Texture</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\texture\Checker.h">
+      <Filter>头文件\Texture</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\material\DiffuseLight.h">
+      <Filter>头文件\Material</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\material\Lambertian.h">
+      <Filter>头文件\Material</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\material\Diffuse.h">
+      <Filter>头文件\Material</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\material\Metal.h">
+      <Filter>头文件\Material</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\material\Isotropic.h">
+      <Filter>头文件\Material</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\material\Dielectric.h">
+      <Filter>头文件\Material</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\camera\Camera.h">
+      <Filter>头文件\Camera</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\utils\Math.h">
+      <Filter>头文件\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\utils\Colors.h">
+      <Filter>头文件\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\utils\Vec2.h">
+      <Filter>头文件\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\utils\Vec3.h">
+      <Filter>头文件\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\utils\AABB.h">
+      <Filter>头文件\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\utils\Ray.h">
+      <Filter>头文件\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\camera\DOFCamera.h">
+      <Filter>头文件\Camera</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\utils\HitResult.h">
+      <Filter>头文件\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\render\IRender.h">
+      <Filter>头文件\Render</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\render\PathTracer.h">
+      <Filter>头文件\Render</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\render\Occlusion.h">
+      <Filter>头文件\Render</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\camera\TiltShiftCamera.h">
+      <Filter>头文件\Camera</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\represent\IRepresent.h">
+      <Filter>头文件\Represent</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\represent\D2DShow.h">
+      <Filter>头文件\Represent</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\utils\Console.h">
+      <Filter>头文件\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\object\wrapper\BVH.h">
+      <Filter>头文件\Object\Wrapper</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\object\wrapper\ConstantMedium.h">
+      <Filter>头文件\Object\Wrapper</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\object\wrapper\RotateZ.h">
+      <Filter>头文件\Object\Wrapper</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\object\wrapper\Union.h">
+      <Filter>头文件\Object\Wrapper</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\object\wrapper\Translate.h">
+      <Filter>头文件\Object\Wrapper</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\utils\ModelLoader.h">
+      <Filter>头文件\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\object\Model.h">
+      <Filter>头文件\Object</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\threeparty\stb_image.h">
+      <Filter>头文件\threeparty</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\threeparty\svpng.h">
+      <Filter>头文件\threeparty</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\material\Light.h">
       <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="Sphere.h">
-      <Filter>头文件\Object</Filter>
-    </ClInclude>
-    <ClInclude Include="Triangle.h">
-      <Filter>头文件\Object</Filter>
-    </ClInclude>
-    <ClInclude Include="Union.h">
-      <Filter>头文件\Object</Filter>
-    </ClInclude>
-    <ClInclude Include="ConstantMedium.h">
-      <Filter>头文件\Object</Filter>
-    </ClInclude>
-    <ClInclude Include="IObject.h">
-      <Filter>头文件\Object</Filter>
-    </ClInclude>
-    <ClInclude Include="RotateZ.h">
-      <Filter>头文件\Object</Filter>
-    </ClInclude>
-    <ClInclude Include="Translate.h">
-      <Filter>头文件\Object</Filter>
-    </ClInclude>
-    <ClInclude Include="BVH.h">
-      <Filter>头文件\Object</Filter>
-    </ClInclude>
-    <ClInclude Include="IMaterial.h">
-      <Filter>头文件\Material</Filter>
-    </ClInclude>
-    <ClInclude Include="ITexture.h">
-      <Filter>头文件\Texture</Filter>
-    </ClInclude>
-    <ClInclude Include="SolidColor.h">
-      <Filter>头文件\Texture</Filter>
-    </ClInclude>
-    <ClInclude Include="Checker.h">
-      <Filter>头文件\Texture</Filter>
-    </ClInclude>
-    <ClInclude Include="DiffuseLight.h">
-      <Filter>头文件\Material</Filter>
-    </ClInclude>
-    <ClInclude Include="Lambertian.h">
-      <Filter>头文件\Material</Filter>
-    </ClInclude>
-    <ClInclude Include="Diffuse.h">
-      <Filter>头文件\Material</Filter>
-    </ClInclude>
-    <ClInclude Include="Metal.h">
-      <Filter>头文件\Material</Filter>
-    </ClInclude>
-    <ClInclude Include="Isotropic.h">
-      <Filter>头文件\Material</Filter>
-    </ClInclude>
-    <ClInclude Include="Dielectric.h">
-      <Filter>头文件\Material</Filter>
-    </ClInclude>
-    <ClInclude Include="Camera.h">
-      <Filter>头文件\Camera</Filter>
-    </ClInclude>
-    <ClInclude Include="Math.h">
-      <Filter>头文件\Utils</Filter>
-    </ClInclude>
-    <ClInclude Include="Colors.h">
-      <Filter>头文件\Utils</Filter>
-    </ClInclude>
-    <ClInclude Include="Vec2.h">
-      <Filter>头文件\Utils</Filter>
-    </ClInclude>
-    <ClInclude Include="Vec3.h">
-      <Filter>头文件\Utils</Filter>
-    </ClInclude>
-    <ClInclude Include="AABB.h">
-      <Filter>头文件\Utils</Filter>
-    </ClInclude>
-    <ClInclude Include="Ray.h">
-      <Filter>头文件\Utils</Filter>
-    </ClInclude>
-    <ClInclude Include="DOFCamera.h">
-      <Filter>头文件\Camera</Filter>
-    </ClInclude>
-    <ClInclude Include="HitResult.h">
-      <Filter>头文件\Utils</Filter>
-    </ClInclude>
-    <ClInclude Include="IRender.h">
-      <Filter>头文件\Render</Filter>
-    </ClInclude>
-    <ClInclude Include="PathTracer.h">
-      <Filter>头文件\Render</Filter>
-    </ClInclude>
-    <ClInclude Include="Occlusion.h">
-      <Filter>头文件\Render</Filter>
-    </ClInclude>
-    <ClInclude Include="TiltShiftCamera.h">
-      <Filter>头文件\Camera</Filter>
-    </ClInclude>
-    <ClInclude Include="IRepresent.h">
-      <Filter>头文件\Represent</Filter>
-    </ClInclude>
-    <ClInclude Include="D2DShow.h">
-      <Filter>头文件\Represent</Filter>
-    </ClInclude>
-    <ClInclude Include="Console.h">
-      <Filter>头文件\Utils</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

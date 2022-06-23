@@ -29,26 +29,26 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v142</PlatformToolset>
+    <PlatformToolset>v143</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>v142</PlatformToolset>
+    <PlatformToolset>v143</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v142</PlatformToolset>
+    <PlatformToolset>v143</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>v142</PlatformToolset>
+    <PlatformToolset>v143</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
@@ -79,10 +79,11 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
     <LibraryPath>$(LibraryPath)</LibraryPath>
+    <IncludePath>$(ProjectDir)\inc;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
-    <IncludePath>$(IncludePath)</IncludePath>
+    <IncludePath>$(ProjectDir)\inc;$(IncludePath)</IncludePath>
     <LibraryPath>$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
@@ -156,70 +157,77 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="AABB.cpp" />
-    <ClCompile Include="BVH.cpp" />
-    <ClCompile Include="Camera.cpp" />
-    <ClCompile Include="Console.cpp" />
-    <ClCompile Include="ConstantMedium.cpp" />
-    <ClCompile Include="D2DShow.cpp" />
-    <ClCompile Include="Dielectric.cpp" />
-    <ClCompile Include="Diffuse.cpp" />
-    <ClCompile Include="DOFCamera.cpp" />
-    <ClCompile Include="Isotropic.cpp" />
-    <ClCompile Include="Lambertian.cpp" />
+    <ClCompile Include="src\material\DiffuseLight.cpp" />
+    <ClCompile Include="inc\represent\MoveableD2DShow.h" />
+    <ClCompile Include="src\represent\MoveableD2DShow.cpp" />
+    <ClCompile Include="src\utils\AABB.cpp" />
+    <ClCompile Include="src\object\wrapper\BVH.cpp" />
+    <ClCompile Include="src\camera\Camera.cpp" />
+    <ClCompile Include="src\utils\Console.cpp" />
+    <ClCompile Include="src\object\wrapper\ConstantMedium.cpp" />
+    <ClCompile Include="src\represent\D2DShow.cpp" />
+    <ClCompile Include="src\material\Dielectric.cpp" />
+    <ClCompile Include="src\material\Diffuse.cpp" />
+    <ClCompile Include="src\camera\DOFCamera.cpp" />
+    <ClCompile Include="src\material\Isotropic.cpp" />
+    <ClCompile Include="src\material\Lambertian.cpp" />
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="Metal.cpp" />
-    <ClCompile Include="Math.cpp" />
-    <ClCompile Include="PathTracer.cpp" />
-    <ClCompile Include="RotateZ.cpp" />
-    <ClCompile Include="Sphere.cpp" />
-    <ClCompile Include="TiltShiftCamera.cpp" />
-    <ClCompile Include="Translate.cpp" />
-    <ClCompile Include="Triangle.cpp" />
-    <ClCompile Include="Union.cpp" />
-    <ClCompile Include="Vec2.cpp" />
-    <ClCompile Include="Vec3.cpp" />
-    <ClCompile Include="Occlusion.cpp" />
+    <ClCompile Include="src\material\Metal.cpp" />
+    <ClCompile Include="src\utils\Math.cpp" />
+    <ClCompile Include="src\object\Model.cpp" />
+    <ClCompile Include="src\utils\ModelLoader.cpp" />
+    <ClCompile Include="src\render\PathTracer.cpp" />
+    <ClCompile Include="src\object\wrapper\RotateZ.cpp" />
+    <ClCompile Include="src\object\Sphere.cpp" />
+    <ClCompile Include="src\camera\TiltShiftCamera.cpp" />
+    <ClCompile Include="src\object\wrapper\Translate.cpp" />
+    <ClCompile Include="src\object\Triangle.cpp" />
+    <ClCompile Include="src\object\wrapper\Union.cpp" />
+    <ClCompile Include="src\utils\Vec2.cpp" />
+    <ClCompile Include="src\utils\Vec3.cpp" />
+    <ClCompile Include="src\render\Occlusion.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="AABB.h" />
-    <ClInclude Include="BVH.h" />
-    <ClInclude Include="Camera.h" />
-    <ClInclude Include="Checker.h" />
-    <ClInclude Include="Colors.h" />
-    <ClInclude Include="Common.h" />
-    <ClInclude Include="Console.h" />
-    <ClInclude Include="ConstantMedium.h" />
-    <ClInclude Include="D2DKit\graph.h" />
-    <ClInclude Include="D2DKit\Keyboard.h" />
-    <ClInclude Include="D2DShow.h" />
-    <ClInclude Include="Dielectric.h" />
-    <ClInclude Include="Diffuse.h" />
-    <ClInclude Include="DiffuseLight.h" />
-    <ClInclude Include="DOFCamera.h" />
-    <ClInclude Include="HitResult.h" />
-    <ClInclude Include="IRepresent.h" />
-    <ClInclude Include="Isotropic.h" />
-    <ClInclude Include="Lambertian.h" />
-    <ClInclude Include="Metal.h" />
-    <ClInclude Include="IMaterial.h" />
-    <ClInclude Include="Math.h" />
-    <ClInclude Include="IObject.h" />
-    <ClInclude Include="PathTracer.h" />
-    <ClInclude Include="Ray.h" />
-    <ClInclude Include="IRender.h" />
-    <ClInclude Include="RotateZ.h" />
-    <ClInclude Include="SolidColor.h" />
-    <ClInclude Include="Sphere.h" />
-    <ClInclude Include="svpng.h" />
-    <ClInclude Include="ITexture.h" />
-    <ClInclude Include="TiltShiftCamera.h" />
-    <ClInclude Include="Translate.h" />
-    <ClInclude Include="Triangle.h" />
-    <ClInclude Include="Union.h" />
-    <ClInclude Include="Vec2.h" />
-    <ClInclude Include="Vec3.h" />
-    <ClInclude Include="Occlusion.h" />
+    <ClInclude Include="inc\material\Light.h" />
+    <ClInclude Include="inc\utils\AABB.h" />
+    <ClInclude Include="inc\object\wrapper\BVH.h" />
+    <ClInclude Include="inc\camera\Camera.h" />
+    <ClInclude Include="inc\texture\Checker.h" />
+    <ClInclude Include="inc\utils\Colors.h" />
+    <ClInclude Include="inc\Common.h" />
+    <ClInclude Include="inc\utils\Console.h" />
+    <ClInclude Include="inc\object\wrapper\ConstantMedium.h" />
+    <ClInclude Include="inc\represent\D2DShow.h" />
+    <ClInclude Include="inc\material\Dielectric.h" />
+    <ClInclude Include="inc\material\Diffuse.h" />
+    <ClInclude Include="inc\material\DiffuseLight.h" />
+    <ClInclude Include="inc\camera\DOFCamera.h" />
+    <ClInclude Include="inc\utils\HitResult.h" />
+    <ClInclude Include="inc\represent\IRepresent.h" />
+    <ClInclude Include="inc\material\Isotropic.h" />
+    <ClInclude Include="inc\material\Lambertian.h" />
+    <ClInclude Include="inc\material\Metal.h" />
+    <ClInclude Include="inc\material\IMaterial.h" />
+    <ClInclude Include="inc\utils\Math.h" />
+    <ClInclude Include="inc\object\IObject.h" />
+    <ClInclude Include="inc\object\Model.h" />
+    <ClInclude Include="inc\utils\ModelLoader.h" />
+    <ClInclude Include="inc\render\PathTracer.h" />
+    <ClInclude Include="inc\utils\Ray.h" />
+    <ClInclude Include="inc\render\IRender.h" />
+    <ClInclude Include="inc\object\wrapper\RotateZ.h" />
+    <ClInclude Include="inc\texture\SolidColor.h" />
+    <ClInclude Include="inc\object\Sphere.h" />
+    <ClInclude Include="inc\threeparty\svpng.h" />
+    <ClInclude Include="inc\texture\ITexture.h" />
+    <ClInclude Include="inc\threeparty\stb_image.h" />
+    <ClInclude Include="inc\camera\TiltShiftCamera.h" />
+    <ClInclude Include="inc\object\wrapper\Translate.h" />
+    <ClInclude Include="inc\object\Triangle.h" />
+    <ClInclude Include="inc\object\wrapper\Union.h" />
+    <ClInclude Include="inc\utils\Vec2.h" />
+    <ClInclude Include="inc\utils\Vec3.h" />
+    <ClInclude Include="inc\render\Occlusion.h" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Direct2DKit\Graphics\Graphics.vcxproj">

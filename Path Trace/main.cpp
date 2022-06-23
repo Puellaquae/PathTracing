@@ -1,38 +1,35 @@
 #include <cmath>
 #include <ctime>
+#include <vector>
 
-
-#include "BVH.h"
-#include "IMaterial.h"
-#include "IObject.h"
-#include "ITexture.h"
-#include "TiltShiftCamera.h"
-#include "Checker.h"
-#include "Vec2.h"
-#include "Vec3.h"
-#include "HitResult.h"
-#include "Colors.h"
-#include "Console.h"
-#include "Dielectric.h"
-#include "DiffuseLight.h"
-#include "Lambertian.h"
-#include "Metal.h"
-#include "PathTracer.h"
-#include "IRender.h"
-#include "RotateZ.h"
-#include "SolidColor.h"
-#include "Translate.h"
-#include "Triangle.h"
-#include "Union.h"
-#include "D2DShow.h"
+#include <utils/Console.h>
+#include <camera/Camera.h>
+#include <texture/SolidColor.h>
+#include <utils/Colors.h>
+#include <texture/Checker.h>
+#include <material/Light.h>
+#include <material/Lambertian.h>
+#include <material/Metal.h>
+#include <material/Dielectric.h>
+#include <object/Triangle.h>
+#include <object/Sphere.h>
+#include <object/wrapper/BVH.h>
+#include <object/wrapper/RotateZ.h>
+#include <object/wrapper/Translate.h>
+#include <object/wrapper/Union.h>
+#include <render/Occlusion.h>
+#include <render/PathTracer.h>
+#include <represent/D2DShow.h>
+#include <utils/ModelLoader.h>
+#include <material/Diffuse.h>
 
 #define SAVE_IMAGE
 
 // 每像素点采样数
-constexpr int SPP = 512;
+constexpr int SPP = 1024;
 
 // 最大递归深度
-constexpr int MAX_DEPTH = 128;
+constexpr int MAX_DEPTH = 256;
 
 // Hit时最小保留距离
 constexpr double MIN_DISTANCE = 0.0001;
@@ -50,15 +47,16 @@ int main()
 	using namespace RayTrace;
 	srand(time(nullptr));
 	OpenANSIControlChar();
-	
+
 	//=================================================//
 
-	TiltShiftCamera camera = TiltShiftCamera();
+	Camera camera = Camera();
 	camera
-		.lookAt(Point{ 0.,-50.,50. }, Point{ 0.,20.,40. }, Vec3{ 0.,0.,1. })
-		.fov(60.);
-	camera.shift = Vec3{ 0.,0.,-0.75};
+		.lookAt(Point{-5, -5, 12}, Point{ 0, 0, 9. }, Vec3{0., 0., 1.})
+		.fov(45.);
+	// camera.shift = Vec3{ 0.,0.,-0.75};
 
+	/*
 	SolidColor white{ WHITE * .75 };
 	SolidColor whiteAll{ WHITE };
 	SolidColor blueViolet{ BLUE_VIOLET * .75 };
@@ -218,9 +216,13 @@ int main()
 	room.objects.emplace_back(&moveBox2);
 
 	BVH scene(room.objects, 0, room.objects.size());
-
+	*/
 	//======================================//
 
+	Model model = loadModelFromObjFile("G:\\code\\Experiment\\D3D11\\D3D11\\Resource\\monu9.obj");
+	Light whiteGround(WHITE * 5.);
+	Sphere ground(Point{ 30., 30., 40. }, 20., &whiteGround);
+	Union scene({ &model, &ground });
 	PathTracer render;
 	render.scene = &scene;
 	render.SPP = SPP;
@@ -237,5 +239,5 @@ int main()
 #ifdef SAVE_IMAGE
 	d2dShow.SaveImage();
 #endif
-	
+
 }
