@@ -14,7 +14,7 @@
 #include <object/Triangle.h>
 #include <object/Sphere.h>
 #include <object/wrapper/BVH.h>
-#include <object/wrapper/RotateZ.h>
+#include <object/wrapper/RotateX.h>
 #include <object/wrapper/Translate.h>
 #include <object/wrapper/Union.h>
 #include <render/Occlusion.h>
@@ -22,6 +22,9 @@
 #include <represent/D2DShow.h>
 #include <utils/ModelLoader.h>
 #include <material/Diffuse.h>
+#include <material/Metal.h>
+#include <iostream>
+#include <represent/MoveableD2DShow.h>
 
 #define SAVE_IMAGE
 
@@ -29,7 +32,7 @@
 constexpr int SPP = 1024;
 
 // 最大递归深度
-constexpr int MAX_DEPTH = 256;
+constexpr int MAX_DEPTH = 512;
 
 // Hit时最小保留距离
 constexpr double MIN_DISTANCE = 0.0001;
@@ -52,7 +55,7 @@ int main()
 
 	Camera camera = Camera();
 	camera
-		.lookAt(Point{-5, -5, 12}, Point{ 0, 0, 9. }, Vec3{0., 0., 1.})
+		.lookAt(Point{-6, -6, 18}, Point{ 2, 2, 9.5 }, Vec3{0., 0., 1.})
 		.fov(45.);
 	// camera.shift = Vec3{ 0.,0.,-0.75};
 
@@ -219,10 +222,14 @@ int main()
 	*/
 	//======================================//
 
-	Model model = loadModelFromObjFile("G:\\code\\Experiment\\D3D11\\D3D11\\Resource\\monu9.obj");
-	Light whiteGround(WHITE * 5.);
-	Sphere ground(Point{ 30., 30., 40. }, 20., &whiteGround);
-	Union scene({ &model, &ground });
+	Model model = loadModelFromObjFile("G:/code/Experiment/D3D11/D3D11/Resource", "monu9.obj");
+	// RotateX modelC(&model, -PI / 4);
+	Light whiteLight(WHITE * 2.);
+	Light red(RED);
+	Light green(GREEN);
+	Light blue(BLUE);
+	Sphere light(Point{ 0., 0., 0. }, 300., &whiteLight);
+	Union scene({ &model, &light });
 	PathTracer render;
 	render.scene = &scene;
 	render.SPP = SPP;

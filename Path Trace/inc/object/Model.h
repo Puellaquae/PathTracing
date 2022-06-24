@@ -8,7 +8,7 @@
 namespace RayTrace {
 	struct Model : IObject {
 		std::vector<Triangle> tris;
-		BVH *bvh = nullptr;
+		IObject *obj = nullptr;
 
 		Model() : IObject(nullptr) {}
 

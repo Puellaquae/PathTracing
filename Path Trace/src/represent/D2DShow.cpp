@@ -82,7 +82,7 @@ namespace RayTrace
 		std::vector<std::thread> renderThreads;
 		UINT* renderProcess = new UINT[concur];
 		const auto gamma = render->gamma;
-		
+
 		for (auto i = 0u; i < concur; i++)
 		{
 			renderThreads.emplace_back(samplerPort, render, canvas, canvasBuf, i, concur, renderProcess + i, gamma);
@@ -112,8 +112,15 @@ namespace RayTrace
 			{
 				if (renderProcess[i] > SPP)
 				{
-					printf_s("#%d[%d/%d][Finish]        \n", i, SPP, SPP);
-					continue;
+					printf_s("#%d[%d/%d][Finish][%dh%dm%ds%dms]   \n",
+						i,
+						SPP,
+						SPP,
+						t / 3600000,
+						(t % 3600000) / 60000,
+						(t % 60000) / 1000,
+						t % 1000);
+					break;
 				}
 				allFin = false;
 				auto spf = 0.001 * t / renderProcess[i];

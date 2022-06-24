@@ -99,6 +99,9 @@ namespace RayTrace
 		box = surrounding(l, r);
 	}
 
+	BVH::BVH(std::vector<IObject*>& objects) : BVH(objects, 0, objects.size())
+	{ }
+
 	bool BVH::hit(Ray ray, Real disMin, Real disMax, HitResult& hitResult)
 	{
 		if (!box.hit(ray, disMin, disMax))
@@ -107,7 +110,7 @@ namespace RayTrace
 		}
 
 		auto hitL = left->hit(ray, disMin, disMax, hitResult);
-		auto hitR = hitL || right->hit(ray, disMin, hitL ? hitResult.distance : disMax, hitResult);
+		auto hitR = right->hit(ray, disMin, hitL ? hitResult.distance : disMax, hitResult);
 
 		return hitL || hitR;
 	}

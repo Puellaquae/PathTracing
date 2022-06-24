@@ -150,6 +150,12 @@
     <ClCompile Include="src\material\DiffuseLight.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="src\texture\Image.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="src\object\wrapper\RotateX.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="inc\Common.h">
@@ -270,6 +276,12 @@
       <Filter>头文件\threeparty</Filter>
     </ClInclude>
     <ClInclude Include="inc\material\Light.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\texture\Image.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\object\wrapper\RotateX.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>

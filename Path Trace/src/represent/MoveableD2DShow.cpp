@@ -6,14 +6,12 @@
 #include <threeparty/svpng.h>
 #include <render/IRender.h>
 
-#define KEY_DOWN(VK_NONAME) ((GetAsyncKeyState(VK_NONAME) & 0x8000) ? 1:0)
-
 class D2DShowImpl : public graph::Scene
 {
 public:
 	graph::ColorBGRA8bit* canvas;
 	UINT screenWidth, screenHeight;
-	std::function<void()> onUpdate;
+	std::function<void(graph::D2DGraphics* g)> onUpdate;
 
 	D2DShowImpl(graph::ColorBGRA8bit* canvas, UINT width, UINT height) :
 		canvas(canvas), screenWidth(width), screenHeight(height) {	}
@@ -22,8 +20,8 @@ public:
 
 	void init(graph::D2DGraphics*) override { }
 
-	void update(graph::D2DGraphics*) override {
-		if (onUpdate != nullptr) { onUpdate(); }
+	void update(graph::D2DGraphics* g) override {
+		if (onUpdate != nullptr) { onUpdate(g); }
 	}
 
 	void render(graph::D2DGraphics* g) override {
@@ -33,25 +31,28 @@ public:
 	}
 };
 
-graph::ColorBGRA8bit displayColor(const RayTrace::Color color, const double gamma)
-{
-	UINT8 r = UINT8(pow(RayTrace::clamp(color.x, 0., 1.), 1. / gamma) * 255. + .5);
-	UINT8 g = UINT8(pow(RayTrace::clamp(color.y, 0., 1.), 1. / gamma) * 255. + .5);
-	UINT8 b = UINT8(pow(RayTrace::clamp(color.z, 0., 1.), 1. / gamma) * 255. + .5);
-	return graph::ColorBGRA8bit{ b,g,r,255 };
-}
+namespace MoveableD2D {
 
-void samplerPort(const RayTrace::IRender* render, graph::ColorBGRA8bit* out, RayTrace::Color* buf, const UINT mod, const UINT concur, UINT* currentSPP, const double gamma)
-{
-	for (*currentSPP = 1; *currentSPP <= render->SPP; (*currentSPP)++)
+	graph::ColorBGRA8bit displayColor(const RayTrace::Color color, const double gamma)
 	{
-		for (auto posy = mod; posy < render->screenHeight; posy += concur)
+		UINT8 r = UINT8(pow(RayTrace::clamp(color.x, 0., 1.), 1. / gamma) * 255. + .5);
+		UINT8 g = UINT8(pow(RayTrace::clamp(color.y, 0., 1.), 1. / gamma) * 255. + .5);
+		UINT8 b = UINT8(pow(RayTrace::clamp(color.z, 0., 1.), 1. / gamma) * 255. + .5);
+		return graph::ColorBGRA8bit{ b,g,r,255 };
+	}
+
+	void samplerPort(const RayTrace::IRender* render, graph::ColorBGRA8bit* out, RayTrace::Color* buf, const UINT mod, const UINT concur, UINT* currentSPP, const double gamma)
+	{
+		for (*currentSPP = 1; *currentSPP <= render->SPP; (*currentSPP)++)
 		{
-			for (auto posx = 0u; posx < render->screenWidth; posx++) {
-				const int pos = posy * render->screenWidth + posx;
-				const auto color = render->sample(posx, posy);
-				buf[pos] = buf[pos] + (color - buf[pos]) / static_cast<float>(*currentSPP);
-				out[pos] = displayColor(buf[pos], gamma);
+			for (auto posy = mod; posy < render->screenHeight; posy += concur)
+			{
+				for (auto posx = 0u; posx < render->screenWidth; posx++) {
+					const int pos = posy * render->screenWidth + posx;
+					const auto color = render->sample(posx, posy);
+					buf[pos] = buf[pos] + (color - buf[pos]) / static_cast<float>(*currentSPP);
+					out[pos] = MoveableD2D::displayColor(buf[pos], gamma);
+				}
 			}
 		}
 	}
@@ -87,13 +88,13 @@ namespace RayTrace
 
 		for (auto i = 0u; i < concur; i++)
 		{
-			renderThreads.emplace_back(samplerPort, render, canvas, canvasBuf, i, concur, renderProcess + i, gamma);
+			renderThreads.emplace_back(MoveableD2D::samplerPort, render, canvas, canvasBuf, i, concur, renderProcess + i, gamma);
 		}
 
 		auto startTime = clock();
 		auto SPP = render->SPP;
 
-		d2d.onUpdate = [startTime, concur, SPP, &renderProcess]
+		d2d.onUpdate = [this, startTime, concur, SPP, &renderProcess](graph::D2DGraphics* g)
 		{
 			static bool allFin = true;
 			static bool barStart = false;
@@ -122,7 +123,38 @@ namespace RayTrace
 				int remain = (SPP - renderProcess[i]) * spf;
 				printf_s("#%d[%d/%d][%.2f spf][%dm%ds]        \n", i, renderProcess[i], SPP, spf, remain / 60, remain % 60);
 			}
-
+			auto kb = g->get_keyboard_state();
+			bool reRender = false;
+			if (kb.W) {
+				reRender = true;
+				this->render->camera->eye.y += 0.1;
+			}
+			if (kb.S) {
+				reRender = true;
+				this->render->camera->eye.y -= 0.1;
+			}
+			if (kb.A) {
+				reRender = true;
+				this->render->camera->eye.x += 0.1;
+			}
+			if (kb.D) {
+				reRender = true;
+				this->render->camera->eye.x -= 0.1;
+			}
+			if (kb.Q) {
+				reRender = true;
+				this->render->camera->eye.z += 0.1;
+			}
+			if (kb.E) {
+				reRender = true;
+				this->render->camera->eye.z -= 0.1;
+			}
+			if (reRender) {
+				for (auto i = 0u; i < concur; i++)
+				{
+					renderProcess[i] = 1;
+				}
+			}
 		};
 
 		for (auto& t : renderThreads)

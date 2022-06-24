@@ -2,30 +2,53 @@
 #include <threeparty/stb_image.h>
 #include <utils/ModelLoader.h>
 #include <object/Model.h>
+#include <object/wrapper/Union.h>
 #include <material/Diffuse.h>
-#include <texture/SolidColor.h>
+#include <texture/Image.h>
 #include <utils/Colors.h>
 
 namespace RayTrace {
-	Model loadModelFromObjFile(const std::string& filePath)
+	bool startWith(const char* str, const char* pattern) {
+		while (*pattern != '\0' && *str++ == *pattern++) {
+		}
+		return *pattern == '\0';
+	}
+
+	ITexture* loadMtllib(const std::string& path, const std::string& fileName) {
+		char lineBuf[255];
+		std::ifstream file(path + "/" + fileName);
+		while (file.getline(lineBuf, 255)) {
+			if (startWith(lineBuf, "map_Kd")) {
+				char imgPathBuf[255] = {};
+				sscanf_s(lineBuf, "map_Kd %s", imgPathBuf, 255);
+				return new Image(path + "/" + imgPathBuf);
+			}
+		}
+	}
+
+	Model loadModelFromObjFile(const std::string& path, const std::string& fileName)
 	{
 		Model model;
-		SolidColor* color = new SolidColor(WHITE);
-		Diffuse* material = new Diffuse(color);
+		IMaterial* material = nullptr;
 		std::vector<Point> points;
 		std::vector<Coord> coords;
-		std::ifstream objFile(filePath);
+		std::ifstream objFile(path + "/" + fileName);
 		char lineBuf[255];
 		while (objFile.getline(lineBuf, 255)) {
-			if (lineBuf[0] == 'v' && lineBuf[1] == ' ') {
+			if (startWith(lineBuf, "mtllib")) {
+				char buf[255] = {};
+				sscanf_s(lineBuf, "mtllib %s", buf, 225);
+				material = new Diffuse(loadMtllib(path, buf));
+			}
+			else if (lineBuf[0] == 'v' && lineBuf[1] == ' ') {
 				Real x, y, z;
 				sscanf_s(lineBuf, "v %f %f %f", &x, &y, &z);
-				points.push_back(Point{ -z, x, y });
+				points.push_back(Point{ x, -z, y});
 			}
 			else if (lineBuf[0] == 'v' && lineBuf[1] == 't') {
 				Real u, v;
 				sscanf_s(lineBuf, "vt %f %f", &u, &v);
-				coords.push_back(Coord{ u, 1.f - v });
+				coords.push_back(Coord{ u, v });
 			}
 			else if (lineBuf[0] == 'f' && lineBuf[1] == ' ') {
 				int vpi[3] = {}, vti[3] = {}, vni[3] = {};
@@ -45,7 +68,7 @@ namespace RayTrace {
 		for (auto& t : model.tris) {
 			trips.push_back(&t);
 		}
-		model.bvh = new BVH(trips, 0, trips.size());
+		model.obj = new BVH(trips);
 		return model;
 	}
 }

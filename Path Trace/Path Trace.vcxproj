@@ -157,6 +157,8 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\object\wrapper\RotateX.cpp" />
+    <ClCompile Include="src\texture\Image.cpp" />
     <ClCompile Include="src\material\DiffuseLight.cpp" />
     <ClCompile Include="inc\represent\MoveableD2DShow.h" />
     <ClCompile Include="src\represent\MoveableD2DShow.cpp" />
@@ -189,6 +191,8 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="inc\material\Light.h" />
+    <ClInclude Include="inc\object\wrapper\RotateX.h" />
+    <ClInclude Include="inc\texture\Image.h" />
     <ClInclude Include="inc\utils\AABB.h" />
     <ClInclude Include="inc\object\wrapper\BVH.h" />
     <ClInclude Include="inc\camera\Camera.h" />
